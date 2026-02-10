@@ -31,7 +31,7 @@ const Admin = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
-    
+
     if (password === adminPassword) {
       setAuthenticated(true);
       setError('');
@@ -58,7 +58,7 @@ const Admin = () => {
     localStorage.setItem('admin_whatsapp', whatsappNumber);
     localStorage.setItem('admin_upi', upiId);
     localStorage.setItem('admin_razorpay', razorpayLink);
-    
+
     alert('Settings saved successfully! Note: These changes are stored locally in your browser.');
   };
 
@@ -69,27 +69,27 @@ const Admin = () => {
       localStorage.removeItem('admin_whatsapp');
       localStorage.removeItem('admin_upi');
       localStorage.removeItem('admin_razorpay');
-      
+
       setProducts(productsData);
       setVehicles(vehicleTypes);
       setWhatsappNumber(import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210');
       setUpiId(import.meta.env.VITE_UPI_ID || 'business@upi');
       setRazorpayLink(import.meta.env.VITE_RAZORPAY_LINK || 'https://rzp.io/l/your-payment-link');
-      
+
       alert('Settings reset to defaults');
     }
   };
 
   if (!authenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-construction-lightGray">
-        <div className="bg-white shadow-2xl border-t-8 border-construction-yellow p-8 max-w-md w-full">
-          <h1 className="font-display text-4xl mb-6 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-construction-lightGray px-4">
+        <div className="bg-white shadow-2xl border-t-4 sm:border-t-8 border-construction-yellow p-6 sm:p-8 max-w-md w-full">
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl mb-4 sm:mb-6 text-center">
             ADMIN <span className="text-construction-yellow">LOGIN</span>
           </h1>
-          
+
           <form onSubmit={handleLogin}>
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <label className="label">Password</label>
               <input
                 type="password"
@@ -102,7 +102,7 @@ const Admin = () => {
 
             {error && (
               <div className="bg-red-100 border-l-4 border-red-500 p-3 mb-4">
-                <p className="text-sm text-red-700">{error}</p>
+                <p className="text-xs sm:text-sm text-red-700">{error}</p>
               </div>
             )}
 
@@ -111,7 +111,7 @@ const Admin = () => {
             </button>
           </form>
 
-          <p className="text-xs text-center text-construction-mediumGray mt-4">
+          <p className="text-[10px] sm:text-xs text-center text-construction-mediumGray mt-4">
             Default password: admin123 (change in .env file)
           </p>
         </div>
@@ -122,26 +122,26 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-construction-lightGray">
       {/* Header */}
-      <div className="bg-construction-darkGray text-white py-6 sticky top-0 z-50 shadow-lg">
+      <div className="bg-construction-darkGray text-white py-4 sm:py-6 sticky top-0 z-50 shadow-lg">
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <h1 className="font-display text-3xl">
+          <h1 className="font-display text-xl sm:text-2xl md:text-3xl">
             ADMIN <span className="text-construction-yellow">DASHBOARD</span>
           </h1>
           <button
             onClick={() => setAuthenticated(false)}
-            className="bg-construction-mediumGray px-4 py-2 hover:bg-construction-yellow hover:text-construction-darkGray transition-colors"
+            className="bg-construction-mediumGray px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base hover:bg-construction-yellow hover:text-construction-darkGray transition-colors"
           >
             Logout
           </button>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Action Buttons */}
-        <div className="flex justify-end space-x-4 mb-8">
+        <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 mb-6 sm:mb-8">
           <button
             onClick={handleResetDefaults}
-            className="bg-construction-mediumGray text-white px-6 py-3 font-bold uppercase hover:bg-red-600 transition-colors"
+            className="bg-construction-mediumGray text-white px-4 sm:px-6 py-2 sm:py-3 font-bold uppercase text-sm sm:text-base hover:bg-red-600 transition-colors"
           >
             Reset to Defaults
           </button>
@@ -153,12 +153,12 @@ const Admin = () => {
           </button>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
           {/* Configuration Settings */}
-          <div className="bg-white shadow-xl border-l-4 border-construction-yellow p-6">
-            <h2 className="font-display text-2xl mb-6">CONFIGURATION</h2>
+          <div className="bg-white shadow-xl border-l-4 border-construction-yellow p-4 sm:p-6">
+            <h2 className="font-display text-xl sm:text-2xl mb-4 sm:mb-6">CONFIGURATION</h2>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <div>
                 <label className="label">WhatsApp Number (with country code)</label>
                 <input
@@ -195,14 +195,14 @@ const Admin = () => {
           </div>
 
           {/* Vehicle Pricing */}
-          <div className="bg-white shadow-xl border-l-4 border-construction-orange p-6">
-            <h2 className="font-display text-2xl mb-6">VEHICLE PRICING</h2>
+          <div className="bg-white shadow-xl border-l-4 border-construction-orange p-4 sm:p-6">
+            <h2 className="font-display text-xl sm:text-2xl mb-4 sm:mb-6">VEHICLE PRICING</h2>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {vehicles.map((vehicle, index) => (
-                <div key={vehicle.id} className="border-b border-construction-lightGray pb-4">
-                  <h3 className="font-bold mb-3">{vehicle.name}</h3>
-                  <div className="grid grid-cols-2 gap-3">
+                <div key={vehicle.id} className="border-b border-construction-lightGray pb-3 sm:pb-4">
+                  <h3 className="font-bold text-sm sm:text-base mb-2 sm:mb-3">{vehicle.name}</h3>
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <div>
                       <label className="text-xs uppercase text-construction-mediumGray">Base Charge (₹)</label>
                       <input
@@ -229,67 +229,71 @@ const Admin = () => {
         </div>
 
         {/* Product Pricing Table */}
-        <div className="bg-white shadow-xl border-l-4 border-construction-yellow p-6 mt-8">
-          <h2 className="font-display text-2xl mb-6">PRODUCT PRICING</h2>
+        <div className="bg-white shadow-xl border-l-4 border-construction-yellow p-4 sm:p-6 mt-6 sm:mt-8">
+          <h2 className="font-display text-xl sm:text-2xl mb-4 sm:mb-6">PRODUCT PRICING</h2>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-construction-darkGray text-white">
-                <tr>
-                  <th className="px-4 py-3 text-left font-display">PRODUCT</th>
-                  <th className="px-4 py-3 text-left font-display">CATEGORY</th>
-                  <th className="px-4 py-3 text-left font-display">BASE PRICE (₹)</th>
-                  <th className="px-4 py-3 text-left font-display">UNIT</th>
-                  <th className="px-4 py-3 text-left font-display">GST (%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product, index) => (
-                  <tr key={product.id} className="border-b hover:bg-construction-lightGray">
-                    <td className="px-4 py-3 font-bold">{product.name}</td>
-                    <td className="px-4 py-3 text-sm">{product.category}</td>
-                    <td className="px-4 py-3">
-                      <input
-                        type="number"
-                        value={product.basePrice}
-                        onChange={(e) => handleProductUpdate(index, 'basePrice', parseInt(e.target.value))}
-                        className="w-24 px-2 py-1 border-2 border-construction-mediumGray focus:border-construction-yellow"
-                      />
-                    </td>
-                    <td className="px-4 py-3 text-sm">{product.unit}</td>
-                    <td className="px-4 py-3">
-                      <input
-                        type="number"
-                        value={product.gstPercentage}
-                        onChange={(e) => handleProductUpdate(index, 'gstPercentage', parseInt(e.target.value))}
-                        className="w-16 px-2 py-1 border-2 border-construction-mediumGray focus:border-construction-yellow"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden">
+                <table className="min-w-full">
+                  <thead className="bg-construction-darkGray text-white">
+                    <tr>
+                      <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-display text-xs sm:text-sm md:text-base">PRODUCT</th>
+                      <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-display text-xs sm:text-sm md:text-base">CATEGORY</th>
+                      <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-display text-xs sm:text-sm md:text-base">BASE PRICE (₹)</th>
+                      <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-display text-xs sm:text-sm md:text-base">UNIT</th>
+                      <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-display text-xs sm:text-sm md:text-base">GST (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product, index) => (
+                      <tr key={product.id} className="border-b hover:bg-construction-lightGray">
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 font-bold text-xs sm:text-sm">{product.name}</td>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">{product.category}</td>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3">
+                          <input
+                            type="number"
+                            value={product.basePrice}
+                            onChange={(e) => handleProductUpdate(index, 'basePrice', parseInt(e.target.value))}
+                            className="w-20 sm:w-24 px-2 py-1 border-2 border-construction-mediumGray focus:border-construction-yellow text-xs sm:text-sm"
+                          />
+                        </td>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">{product.unit}</td>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3">
+                          <input
+                            type="number"
+                            value={product.gstPercentage}
+                            onChange={(e) => handleProductUpdate(index, 'gstPercentage', parseInt(e.target.value))}
+                            className="w-14 sm:w-16 px-2 py-1 border-2 border-construction-mediumGray focus:border-construction-yellow text-xs sm:text-sm"
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Instructions */}
-        <div className="bg-construction-yellow p-6 mt-8">
-          <h3 className="font-display text-2xl mb-4">IMPORTANT NOTES</h3>
-          <ul className="space-y-2 text-sm">
+        <div className="bg-construction-yellow p-4 sm:p-6 mt-6 sm:mt-8">
+          <h3 className="font-display text-xl sm:text-2xl mb-3 sm:mb-4">IMPORTANT NOTES</h3>
+          <ul className="space-y-2 text-xs sm:text-sm">
             <li className="flex items-start space-x-2">
-              <span className="text-construction-darkGray font-bold">•</span>
+              <span className="text-construction-darkGray font-bold flex-shrink-0">•</span>
               <span>Changes are saved in browser's localStorage (not in database)</span>
             </li>
             <li className="flex items-start space-x-2">
-              <span className="text-construction-darkGray font-bold">•</span>
+              <span className="text-construction-darkGray font-bold flex-shrink-0">•</span>
               <span>Clear browser data will reset all custom pricing</span>
             </li>
             <li className="flex items-start space-x-2">
-              <span className="text-construction-darkGray font-bold">•</span>
+              <span className="text-construction-darkGray font-bold flex-shrink-0">•</span>
               <span>For production use, implement a proper backend database</span>
             </li>
             <li className="flex items-start space-x-2">
-              <span className="text-construction-darkGray font-bold">•</span>
+              <span className="text-construction-darkGray font-bold flex-shrink-0">•</span>
               <span>Click "Save All Changes" to apply modifications</span>
             </li>
           </ul>

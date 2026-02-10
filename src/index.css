@@ -23,47 +23,139 @@
 
 @layer components {
   .btn-primary {
-    background-color: #fdb913;
+    background: linear-gradient(135deg, #fdb913 0%, #f5a623 100%);
     color: #2c2c2c;
     font-weight: 700;
     padding: 0.75rem 2rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    transition: all 0.3s;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 10px 25px -5px rgba(253, 185, 19, 0.3),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  .btn-primary:hover::before {
+    left: 100%;
   }
 
   .btn-primary:hover {
-    background-color: #ff6b35;
+    background: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
     color: white;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
+    box-shadow:
+      0 15px 35px -5px rgba(255, 107, 53, 0.4),
+      0 8px 12px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 15px -3px rgba(253, 185, 19, 0.3);
   }
 
   .btn-secondary {
-    background-color: #2c2c2c;
+    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
     color: white;
     font-weight: 700;
     padding: 0.75rem 2rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    transition: all 0.3s;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 10px 25px -5px rgba(0, 0, 0, 0.2),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-secondary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  .btn-secondary:hover::before {
+    left: 100%;
   }
 
   .btn-secondary:hover {
-    background-color: #4a4a4a;
+    background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+    transform: translateY(-2px);
+    box-shadow:
+      0 15px 35px -5px rgba(0, 0, 0, 0.3),
+      0 8px 12px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-secondary:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.2);
   }
 
   .card {
     background-color: white;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s;
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-left: 4px solid #fdb913;
+    position: relative;
+  }
+
+  .card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(253, 185, 19, 0.03) 0%,
+      transparent 50%
+    );
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
   }
 
   .card:hover {
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.25),
+      0 10px 20px -5px rgba(253, 185, 19, 0.1);
+    transform: translateY(-4px);
+    border-left-width: 6px;
+  }
+
+  .card:hover::after {
+    opacity: 1;
   }
 
   .input-field {
@@ -140,5 +232,30 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  /* Professional Spacing */
+  .section-heading {
+    @apply font-display text-4xl sm:text-5xl md:text-6xl mb-6 sm:mb-8 leading-tight text-center;
+  }
+
+  .section-subheading {
+    @apply text-base sm:text-lg text-construction-mediumGray max-w-4xl mx-auto text-center px-4;
+  }
+
+  .icon-box {
+    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center;
+  }
+
+  .icon-box-sm {
+    @apply w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center;
+  }
+
+  .feature-grid {
+    @apply grid gap-8 sm:gap-10 md:gap-12;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300;
   }
 }
