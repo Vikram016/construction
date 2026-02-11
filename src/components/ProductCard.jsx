@@ -1,64 +1,40 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
   return (
-    <div className="card h-full flex flex-col bg-white overflow-hidden group animate-fade-in hover:-translate-y-1 transition-all duration-300">
-      {/* Image Section */}
-      <div className="relative h-52 sm:h-60 overflow-hidden bg-construction-mediumGray">
+    <Link
+      to={`/product/${product.id}`}
+      className="group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-xl transition-all"
+    >
+      <div className="aspect-square bg-neutral-100 overflow-hidden">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute top-0 right-0 bg-construction-yellow text-construction-darkGray px-3 py-1 font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-sm z-10">
-          GST {product.gstPercentage}%
-        </div>
-        {/* Subtle overlay gradient for better text contrast if needed later, or cleaner transition */}
-        <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
       </div>
-
-      {/* Content Section */}
-      <div className="p-6 flex flex-col flex-grow relative">
-        {/* Centered Header */}
-        <div className="text-center pb-4 mb-4 border-b border-gray-100">
-          <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-construction-orange mb-2">
-            {product.category}
-          </div>
-          <h3 className="font-display text-xl sm:text-2xl text-construction-darkGray leading-tight group-hover:text-construction-orange transition-colors duration-300">
-            {product.name}
-          </h3>
+      <div className="p-4">
+        <div className="text-xs text-primary-500 font-medium mb-1 uppercase">
+          {product.category}
         </div>
-
-        {/* Left-Aligned Details */}
-        <div className="flex-grow text-left">
-          <p className="text-sm text-construction-mediumGray mb-6 line-clamp-3 leading-relaxed">
-            {product.description}
-          </p>
-
-          <div className="mb-6">
-            <div className="text-[10px] sm:text-xs text-construction-mediumGray uppercase tracking-wide font-medium mb-1">
-              Starting from
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-display text-3xl sm:text-4xl text-construction-darkGray tracking-tight">
-                ₹{product.basePrice}
-              </span>
-              <span className="text-xs text-construction-mediumGray font-medium">
-                / {product.unit}
-              </span>
+        <h3 className="font-semibold text-neutral-900 mb-2 group-hover:text-primary-500 transition-colors line-clamp-1">
+          {product.name}
+        </h3>
+        <p className="text-sm text-neutral-600 mb-3 line-clamp-2">
+          {product.description}
+        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-xs text-neutral-500">Starting from</div>
+            <div className="text-xl font-bold text-neutral-900">
+              ₹{product.basePrice}
+              <span className="text-sm font-normal text-neutral-500">/{product.unit}</span>
             </div>
           </div>
+          <div className="badge-success text-xs">In Stock</div>
         </div>
-
-        {/* Action Button */}
-        <Link
-          to={`/product/${product.id}`}
-          className="w-full bg-construction-darkGray text-white text-center py-3.5 sm:py-4 font-bold uppercase tracking-wider text-sm sm:text-base hover:bg-construction-yellow hover:text-construction-darkGray transition-all duration-300 shadow-md hover:shadow-lg mt-auto"
-        >
-          Get Quote
-        </Link>
       </div>
-    </div>
+    </Link>
   );
 };
 

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import WhatsAppFloat from "./components/WhatsAppFloat";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
@@ -10,7 +11,7 @@ import Admin from "./pages/Admin";
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-neutral-50">
         <Header />
         <main className="flex-grow">
           <Routes>
@@ -22,6 +23,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <WhatsAppFloat />
       </div>
     </Router>
   );
