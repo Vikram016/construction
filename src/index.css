@@ -4,18 +4,13 @@
 
 @layer base {
   body {
-    font-family: "Inter", system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: "Poppins", "Inter", sans-serif;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', 'Inter', sans-serif;
     font-weight: 700;
   }
 }
@@ -30,12 +25,12 @@
     transition: all 0.2s;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
-
+  
   .btn-primary:hover {
     background-color: #ea580c;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
-
+  
   .btn-primary:active {
     transform: scale(0.95);
   }
@@ -49,12 +44,12 @@
     transition: all 0.2s;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
-
+  
   .btn-secondary:hover {
     background-color: #404040;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
-
+  
   .btn-secondary:active {
     transform: scale(0.95);
   }
@@ -68,18 +63,18 @@
     border-radius: 0.5rem;
     transition: all 0.2s;
   }
-
+  
   .btn-outline:hover {
     background-color: #f97316;
     color: white;
   }
-
+  
   .btn-outline:active {
     transform: scale(0.95);
   }
 
   .btn-whatsapp {
-    background-color: #25d366;
+    background-color: #25D366;
     color: white;
     font-weight: 600;
     padding: 0.75rem 1.5rem;
@@ -90,12 +85,12 @@
     align-items: center;
     gap: 0.5rem;
   }
-
+  
   .btn-whatsapp:hover {
-    background-color: #20ba5a;
+    background-color: #20BA5A;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
-
+  
   .btn-whatsapp:active {
     transform: scale(0.95);
   }
@@ -107,7 +102,7 @@
     overflow: hidden;
     transition: all 0.3s;
   }
-
+  
   .card:hover {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   }
@@ -139,7 +134,7 @@
     border-radius: 0.5rem;
     transition: all 0.2s;
   }
-
+  
   .input-field:focus {
     outline: none;
     border-color: #f97316;
@@ -147,18 +142,18 @@
   }
 
   .section-title {
-    font-family: "Poppins", "Inter", sans-serif;
+    font-family: 'Poppins', 'Inter', sans-serif;
     font-size: 2.25rem;
     font-weight: 700;
     color: #171717;
   }
-
+  
   @media (min-width: 768px) {
     .section-title {
       font-size: 2.5rem;
     }
   }
-
+  
   @media (min-width: 1024px) {
     .section-title {
       font-size: 3rem;
@@ -172,14 +167,14 @@
     padding-left: 1rem;
     padding-right: 1rem;
   }
-
+  
   @media (min-width: 640px) {
     .container-custom {
       padding-left: 1.5rem;
       padding-right: 1.5rem;
     }
   }
-
+  
   @media (min-width: 1024px) {
     .container-custom {
       padding-left: 2rem;
@@ -239,8 +234,7 @@
 }
 
 @keyframes pulse {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 1;
   }
   50% {
