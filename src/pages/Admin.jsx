@@ -1,299 +1,212 @@
-import { useState, useEffect } from 'react';
-import { productsData, vehicleTypes } from '../data/products';
+// src/pages/Admin.jsx — Admin dashboard for product management. Route: /admin
+
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useProducts } from '../hooks/useProducts';
+import ProductForm from '../components/admin/ProductForm';
+import { createProduct, updateProduct, toggleProductActive, deleteProduct } from '../services/productService';
+import { getFirebaseInfo } from '../firebase/firebaseConfig';
 
 const Admin = () => {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const { products, loading, refetch, error } = useProducts(true);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const [view,    setView]    = useState('list'); // 'list' | 'add' | 'edit'
+  const [editing, setEditing] = useState(null);
+  const [saving,  setSaving]  = useState(false);
+  const [toast,   setToast]   = useState('');
+  const [search,  setSearch]  = useState('');
 
-  // Admin settings state
-  const [products, setProducts] = useState([]);
-  const [vehicles, setVehicles] = useState([]);
-  const [whatsappNumber, setWhatsappNumber] = useState('');
-  const [upiId, setUpiId] = useState('');
-  const [razorpayLink, setRazorpayLink] = useState('');
+  const firebaseInfo = getFirebaseInfo();
 
-  useEffect(() => {
-    // Load from localStorage or use defaults
-    const savedProducts = localStorage.getItem('admin_products');
-    const savedVehicles = localStorage.getItem('admin_vehicles');
-    const savedWhatsapp = localStorage.getItem('admin_whatsapp');
-    const savedUpi = localStorage.getItem('admin_upi');
-    const savedRazorpay = localStorage.getItem('admin_razorpay');
+  const notify = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000); };
 
-    setProducts(savedProducts ? JSON.parse(savedProducts) : productsData);
-    setVehicles(savedVehicles ? JSON.parse(savedVehicles) : vehicleTypes);
-    setWhatsappNumber(savedWhatsapp || import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210');
-    setUpiId(savedUpi || import.meta.env.VITE_UPI_ID || 'business@upi');
-    setRazorpayLink(savedRazorpay || import.meta.env.VITE_RAZORPAY_LINK || 'https://rzp.io/l/your-payment-link');
-  }, []);
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
-    
-    if (password === adminPassword) {
-      setAuthenticated(true);
-      setError('');
-    } else {
-      setError('Incorrect password');
-    }
+  const handleSave = async (formData) => {
+    setSaving(true);
+    try {
+      if (editing) { await updateProduct(editing.id, formData); notify('Product updated ✓'); }
+      else         { await createProduct(formData);             notify('Product added ✓');   }
+      await refetch(); setView('list'); setEditing(null);
+    } catch (err) { notify('Error: ' + err.message); }
+    finally { setSaving(false); }
   };
 
-  const handleProductUpdate = (index, field, value) => {
-    const updated = [...products];
-    updated[index] = { ...updated[index], [field]: value };
-    setProducts(updated);
+  const handleToggle = async (p) => {
+    try { await toggleProductActive(p.id, p.isActive); notify(`Product ${p.isActive ? 'disabled' : 'enabled'} ✓`); await refetch(); }
+    catch (err) { notify('Error: ' + err.message); }
   };
 
-  const handleVehicleUpdate = (index, field, value) => {
-    const updated = [...vehicles];
-    updated[index] = { ...updated[index], [field]: value };
-    setVehicles(updated);
+  const handleDelete = async (p) => {
+    if (!window.confirm(`Delete "${p.name}"? This cannot be undone.`)) return;
+    try { await deleteProduct(p.id, p.images || []); notify('Deleted ✓'); await refetch(); }
+    catch (err) { notify('Error: ' + err.message); }
   };
 
-  const handleSaveSettings = () => {
-    localStorage.setItem('admin_products', JSON.stringify(products));
-    localStorage.setItem('admin_vehicles', JSON.stringify(vehicles));
-    localStorage.setItem('admin_whatsapp', whatsappNumber);
-    localStorage.setItem('admin_upi', upiId);
-    localStorage.setItem('admin_razorpay', razorpayLink);
-    
-    alert('Settings saved successfully! Note: These changes are stored locally in your browser.');
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
   };
 
-  const handleResetDefaults = () => {
-    if (confirm('Reset all settings to defaults?')) {
-      localStorage.removeItem('admin_products');
-      localStorage.removeItem('admin_vehicles');
-      localStorage.removeItem('admin_whatsapp');
-      localStorage.removeItem('admin_upi');
-      localStorage.removeItem('admin_razorpay');
-      
-      setProducts(productsData);
-      setVehicles(vehicleTypes);
-      setWhatsappNumber(import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210');
-      setUpiId(import.meta.env.VITE_UPI_ID || 'business@upi');
-      setRazorpayLink(import.meta.env.VITE_RAZORPAY_LINK || 'https://rzp.io/l/your-payment-link');
-      
-      alert('Settings reset to defaults');
-    }
-  };
+  const filtered = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
 
-  if (!authenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-construction-lightGray">
-        <div className="bg-white shadow-2xl border-t-8 border-construction-yellow p-8 max-w-md w-full">
-          <h1 className="font-display text-4xl mb-6 text-center">
-            ADMIN <span className="text-construction-yellow">LOGIN</span>
-          </h1>
-          
-          <form onSubmit={handleLogin}>
-            <div className="mb-6">
-              <label className="label">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-field"
-                placeholder="Enter admin password"
-              />
-            </div>
+  const stats = [
+    { label: 'Total',    value: products.length,                          color: 'bg-blue-50   text-blue-800'  },
+    { label: 'Active',   value: products.filter(p=>p.isActive).length,   color: 'bg-green-50  text-green-800' },
+    { label: 'Disabled', value: products.filter(p=>!p.isActive).length,  color: 'bg-red-50    text-red-800'   },
+    { label: 'Low Stock (<10)', value: products.filter(p=>p.stock<10).length, color: 'bg-yellow-50 text-yellow-800' },
+  ];
 
-            {error && (
-              <div className="bg-red-100 border-l-4 border-red-500 p-3 mb-4">
-                <p className="text-sm text-red-700">{error}</p>
-              </div>
-            )}
-
-            <button type="submit" className="btn-primary w-full">
-              Login
-            </button>
-          </form>
-
-          <p className="text-xs text-center text-construction-mediumGray mt-4">
-            Default password: admin123 (change in .env file)
-          </p>
+  /* ── Add/Edit view ─────────────────────────────────────────────────────── */
+  if (view === 'add' || view === 'edit') return (
+    <div className="min-h-screen bg-neutral-50">
+      <div className="bg-neutral-900 text-white px-6 py-4 flex items-center gap-4">
+        <button onClick={() => { setView('list'); setEditing(null); }} className="text-neutral-300 hover:text-white text-sm">← Back</button>
+        <h1 className="text-xl font-black uppercase">{view === 'add' ? 'Add New Product' : `Edit: ${editing?.name}`}</h1>
+      </div>
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6">
+          <ProductForm initial={editing} onSave={handleSave} onCancel={() => { setView('list'); setEditing(null); }} loading={saving} />
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
+  /* ── List view ─────────────────────────────────────────────────────────── */
   return (
-    <div className="min-h-screen bg-construction-lightGray">
-      {/* Header */}
-      <div className="bg-construction-darkGray text-white py-6 sticky top-0 z-50 shadow-lg">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <h1 className="font-display text-3xl">
-            ADMIN <span className="text-construction-yellow">DASHBOARD</span>
-          </h1>
+    <div className="min-h-screen bg-neutral-50">
+      {/* Sticky header */}
+      <div className="bg-neutral-900 text-white px-6 py-4 sticky top-0 z-30 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-black uppercase">BuildMart Admin</h1>
+          <div className="flex items-center gap-4 mt-1">
+            <p className="text-xs text-neutral-400">
+              🔴 Live Firestore · Project: {firebaseInfo.projectId}
+            </p>
+            <p className="text-xs text-green-400">
+              👤 {user?.email}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => setAuthenticated(false)}
-            className="bg-construction-mediumGray px-4 py-2 hover:bg-construction-yellow hover:text-construction-darkGray transition-colors"
-          >
+            onClick={() => { setEditing(null); setView('add'); }}
+            className="bg-construction-yellow text-neutral-900 font-bold px-4 py-2 rounded-lg text-sm hover:bg-construction-orange transition-colors border-2 border-neutral-900">
+            + Add Product
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition-colors border-2 border-red-800">
             Logout
           </button>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Action Buttons */}
-        <div className="flex justify-end space-x-4 mb-8">
-          <button
-            onClick={handleResetDefaults}
-            className="bg-construction-mediumGray text-white px-6 py-3 font-bold uppercase hover:bg-red-600 transition-colors"
-          >
-            Reset to Defaults
-          </button>
-          <button
-            onClick={handleSaveSettings}
-            className="btn-primary"
-          >
-            Save All Changes
-          </button>
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-20 right-4 z-50 bg-neutral-900 text-white px-4 py-3 rounded-lg shadow-xl text-sm">
+          {toast}
+        </div>
+      )}
+
+      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-50 border-2 border-red-500 text-red-700 px-6 py-4 rounded-xl">
+            <p className="font-bold mb-2">⚠️ Error Loading Products</p>
+            <p className="text-sm">{error}</p>
+            <button 
+              onClick={refetch}
+              className="mt-3 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+              Retry
+            </button>
+          </div>
+        )}
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {stats.map(s => (
+            <div key={s.label} className={`rounded-xl p-4 border ${s.color}`}>
+              <p className="text-3xl font-black">{s.value}</p>
+              <p className="text-sm font-semibold mt-1">{s.label}</p>
+            </div>
+          ))}
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Configuration Settings */}
-          <div className="bg-white shadow-xl border-l-4 border-construction-yellow p-6">
-            <h2 className="font-display text-2xl mb-6">CONFIGURATION</h2>
+        {/* Search */}
+        <input className="w-full border-2 border-neutral-200 rounded-lg px-4 py-2 text-sm focus:border-construction-yellow focus:outline-none"
+          placeholder="Search products…" value={search} onChange={e => setSearch(e.target.value)} />
 
-            <div className="space-y-6">
-              <div>
-                <label className="label">WhatsApp Number (with country code)</label>
-                <input
-                  type="text"
-                  value={whatsappNumber}
-                  onChange={(e) => setWhatsappNumber(e.target.value)}
-                  className="input-field"
-                  placeholder="919876543210"
-                />
-              </div>
-
-              <div>
-                <label className="label">UPI ID</label>
-                <input
-                  type="text"
-                  value={upiId}
-                  onChange={(e) => setUpiId(e.target.value)}
-                  className="input-field"
-                  placeholder="business@upi"
-                />
-              </div>
-
-              <div>
-                <label className="label">Razorpay Payment Link</label>
-                <input
-                  type="text"
-                  value={razorpayLink}
-                  onChange={(e) => setRazorpayLink(e.target.value)}
-                  className="input-field"
-                  placeholder="https://rzp.io/l/your-payment-link"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Vehicle Pricing */}
-          <div className="bg-white shadow-xl border-l-4 border-construction-orange p-6">
-            <h2 className="font-display text-2xl mb-6">VEHICLE PRICING</h2>
-
-            <div className="space-y-6">
-              {vehicles.map((vehicle, index) => (
-                <div key={vehicle.id} className="border-b border-construction-lightGray pb-4">
-                  <h3 className="font-bold mb-3">{vehicle.name}</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-xs uppercase text-construction-mediumGray">Base Charge (₹)</label>
-                      <input
-                        type="number"
-                        value={vehicle.baseCharge}
-                        onChange={(e) => handleVehicleUpdate(index, 'baseCharge', parseInt(e.target.value))}
-                        className="input-field text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase text-construction-mediumGray">Per KM Rate (₹)</label>
-                      <input
-                        type="number"
-                        value={vehicle.perKmRate}
-                        onChange={(e) => handleVehicleUpdate(index, 'perKmRate', parseInt(e.target.value))}
-                        className="input-field text-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Product Pricing Table */}
-        <div className="bg-white shadow-xl border-l-4 border-construction-yellow p-6 mt-8">
-          <h2 className="font-display text-2xl mb-6">PRODUCT PRICING</h2>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-construction-darkGray text-white">
-                <tr>
-                  <th className="px-4 py-3 text-left font-display">PRODUCT</th>
-                  <th className="px-4 py-3 text-left font-display">CATEGORY</th>
-                  <th className="px-4 py-3 text-left font-display">BASE PRICE (₹)</th>
-                  <th className="px-4 py-3 text-left font-display">UNIT</th>
-                  <th className="px-4 py-3 text-left font-display">GST (%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product, index) => (
-                  <tr key={product.id} className="border-b hover:bg-construction-lightGray">
-                    <td className="px-4 py-3 font-bold">{product.name}</td>
-                    <td className="px-4 py-3 text-sm">{product.category}</td>
-                    <td className="px-4 py-3">
-                      <input
-                        type="number"
-                        value={product.basePrice}
-                        onChange={(e) => handleProductUpdate(index, 'basePrice', parseInt(e.target.value))}
-                        className="w-24 px-2 py-1 border-2 border-construction-mediumGray focus:border-construction-yellow"
-                      />
-                    </td>
-                    <td className="px-4 py-3 text-sm">{product.unit}</td>
-                    <td className="px-4 py-3">
-                      <input
-                        type="number"
-                        value={product.gstPercentage}
-                        onChange={(e) => handleProductUpdate(index, 'gstPercentage', parseInt(e.target.value))}
-                        className="w-16 px-2 py-1 border-2 border-construction-mediumGray focus:border-construction-yellow"
-                      />
-                    </td>
+        {/* Table */}
+        {loading ? (
+          <div className="text-center py-12 text-neutral-400">Loading…</div>
+        ) : (
+          <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-neutral-50 border-b border-neutral-200 text-left">
+                    {['','Name','Category','Price (incl. GST)','Stock','Status','Actions'].map(h => (
+                      <th key={h} className="px-4 py-3 font-bold text-neutral-700 whitespace-nowrap">{h}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filtered.map(p => {
+                    const total    = p.basePrice * (1 + p.gstPercentage / 100);
+                    const lowStock = p.stock < 10;
+                    return (
+                      <tr key={p.id} className="border-b border-neutral-100 hover:bg-neutral-50 transition-colors">
+                        <td className="px-4 py-3">
+                          {p.images && p.images.length > 0
+                            ? <img src={p.images[0].url} alt={p.name} className="w-12 h-12 object-cover rounded-lg" loading="lazy" />
+                            : p.imageUrl
+                            ? <img src={p.imageUrl} alt={p.name} className="w-12 h-12 object-cover rounded-lg" loading="lazy" />
+                            : <div className="w-12 h-12 bg-neutral-200 rounded-lg flex items-center justify-center text-xl">📦</div>
+                          }
+                        </td>
+                        <td className="px-4 py-3 max-w-xs">
+                          <p className="font-semibold text-neutral-900 truncate">{p.name}</p>
+                          <p className="text-xs text-neutral-400">{p.unit}</p>
+                        </td>
+                        <td className="px-4 py-3 text-neutral-600 whitespace-nowrap">{p.category}</td>
+                        <td className="px-4 py-3">
+                          <p className="font-bold">₹{total.toFixed(0)}</p>
+                          <p className="text-xs text-neutral-400">₹{p.basePrice} + {p.gstPercentage}% GST</p>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`font-bold ${lowStock ? 'text-red-600' : 'text-green-600'}`}>{p.stock}</span>
+                          {lowStock && <p className="text-xs text-red-500">Low stock</p>}
+                        </td>
+                        <td className="px-4 py-3">
+                          <button onClick={() => handleToggle(p)}
+                            className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${p.isActive ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-neutral-200 text-neutral-600 hover:bg-neutral-300'}`}>
+                            {p.isActive ? '● Active' : '○ Disabled'}
+                          </button>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-2">
+                            <button onClick={() => { setEditing(p); setView('edit'); }}
+                              className="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-lg font-semibold">Edit</button>
+                            <button onClick={() => handleDelete(p)}
+                              className="text-xs bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1.5 rounded-lg font-semibold">Delete</button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {filtered.length === 0 && (
+                    <tr><td colSpan={7} className="text-center py-12 text-neutral-400">
+                      No products found.{' '}
+                      <button onClick={() => { setEditing(null); setView('add'); }} className="text-construction-yellow font-semibold underline">Add one</button>
+                    </td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-
-        {/* Instructions */}
-        <div className="bg-construction-yellow p-6 mt-8">
-          <h3 className="font-display text-2xl mb-4">IMPORTANT NOTES</h3>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-start space-x-2">
-              <span className="text-construction-darkGray font-bold">•</span>
-              <span>Changes are saved in browser's localStorage (not in database)</span>
-            </li>
-            <li className="flex items-start space-x-2">
-              <span className="text-construction-darkGray font-bold">•</span>
-              <span>Clear browser data will reset all custom pricing</span>
-            </li>
-            <li className="flex items-start space-x-2">
-              <span className="text-construction-darkGray font-bold">•</span>
-              <span>For production use, implement a proper backend database</span>
-            </li>
-            <li className="flex items-start space-x-2">
-              <span className="text-construction-darkGray font-bold">•</span>
-              <span>Click "Save All Changes" to apply modifications</span>
-            </li>
-          </ul>
-        </div>
+        )}
       </div>
     </div>
   );

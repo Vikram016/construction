@@ -1,0 +1,51 @@
+// storage.rules
+// PRODUCTION-READY Storage Rules for BuildMart
+// Deploy: firebase deploy --only storage
+
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // ────────────────────────────────────────────────────────────────────────
+    // HELPER FUNCTIONS
+    // ────────────────────────────────────────────────────────────────────────
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    
+    function isValidSize() {
+      // Max 5MB for images
+      return request.resource.size < 5 * 1024 * 1024;
+    }
+    
+    // ────────────────────────────────────────────────────────────────────────
+    // PRODUCT IMAGES (DEPRECATED - Use Cloudinary instead)
+    // ────────────────────────────────────────────────────────────────────────
+    
+    match /products/{fileName} {
+      // Anyone can read product images
+      allow read: if true;
+      
+      // Only admins can upload/delete product images
+      allow create, delete: if isAdmin() && isImage() && isValidSize();
+    }
+    
+    // ────────────────────────────────────────────────────────────────────────
+    // DEFAULT DENY ALL OTHER PATHS
+    // ────────────────────────────────────────────────────────────────────────
+    
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

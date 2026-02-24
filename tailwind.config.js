@@ -30,7 +30,10 @@ export default {
           700: '#404040',
           800: '#262626',
           900: '#171717',
-        }
+        },
+        // Construction theme accent colors used across the app
+        'construction-yellow': '#FDB913',
+        'construction-orange': '#FF6B35',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

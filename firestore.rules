@@ -1,0 +1,121 @@
+// firestore.rules
+// PRODUCTION-READY Security Rules for BuildMart
+// Deploy: firebase deploy --only firestore:rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ────────────────────────────────────────────────────────────────────────
+    // HELPER FUNCTIONS
+    // ────────────────────────────────────────────────────────────────────────
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Validate product data
+    function isValidProduct() {
+      let data = request.resource.data;
+      return data.name is string && data.name.size() > 0 &&
+             data.basePrice is number && data.basePrice > 0 &&
+             data.stock is number && data.stock >= 0 &&
+             data.category is string &&
+             data.isActive is bool;
+    }
+    
+    // ────────────────────────────────────────────────────────────────────────
+    // USERS COLLECTION
+    // ────────────────────────────────────────────────────────────────────────
+    
+    match /users/{userId} {
+      // Users can read their own document
+      allow read: if isOwner(userId);
+      
+      // Only admins can read all users
+      allow list: if isAdmin();
+      
+      // Users can create their own document on signup
+      allow create: if isOwner(userId) && 
+                       request.resource.data.role == 'user';
+      
+      // Users can update their own document (except role)
+      allow update: if isOwner(userId) && 
+                       request.resource.data.role == resource.data.role;
+      
+      // Only admins can change roles or delete users
+      allow update, delete: if isAdmin();
+    }
+    
+    // ────────────────────────────────────────────────────────────────────────
+    // PRODUCTS COLLECTION
+    // ────────────────────────────────────────────────────────────────────────
+    
+    match /products/{productId} {
+      // Anyone can read active products (for public storefront)
+      allow read: if resource.data.isActive == true || isAdmin();
+      
+      // Only admins can list all products
+      allow list: if isAdmin() || 
+                     (resource.data.isActive == true);
+      
+      // Only admins can create/update/delete products
+      allow create: if isAdmin() && isValidProduct();
+      allow update: if isAdmin() && isValidProduct();
+      allow delete: if isAdmin();
+    }
+    
+    // ────────────────────────────────────────────────────────────────────────
+    // ORDERS COLLECTION
+    // ────────────────────────────────────────────────────────────────────────
+    
+    match /orders/{orderId} {
+      // Users can read their own orders
+      allow read: if isAuthenticated() && 
+                     (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Users can create orders for themselves
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Only admins can update/delete orders
+      allow update, delete: if isAdmin();
+      
+      // Users can list their own orders
+      allow list: if isAuthenticated() && 
+                     (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    // ────────────────────────────────────────────────────────────────────────
+    // QUOTATIONS COLLECTION
+    // ────────────────────────────────────────────────────────────────────────
+    
+    match /quotations/{quotationId} {
+      // Anyone can create a quotation (for quote requests)
+      allow create: if true;
+      
+      // Only admins can read/update quotations
+      allow read, update, delete: if isAdmin();
+    }
+    
+    // ────────────────────────────────────────────────────────────────────────
+    // DEFAULT DENY ALL OTHER COLLECTIONS
+    // ────────────────────────────────────────────────────────────────────────
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

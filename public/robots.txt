@@ -1,0 +1,38 @@
+# BuildMart — robots.txt
+# https://buildmart.in
+
+User-agent: *
+Allow: /
+
+# Block admin and login from indexing
+Disallow: /admin
+Disallow: /admin/
+Disallow: /login
+Disallow: /login/
+
+# Block cart (session-specific, no SEO value)
+Disallow: /cart
+Disallow: /cart/
+
+# Block order tracking (user-specific)
+Disallow: /track/
+
+# Block legacy redirect URLs (canonical is /services/*)
+Disallow: /waste-sand
+Disallow: /debris-sand
+Disallow: /site-clean
+
+# Allow all bots on service pages (important for SEO)
+Allow: /services/
+Allow: /products/
+Allow: /blog/
+
+# Sitemap
+Sitemap: https://buildmart.in/sitemap.xml
+
+# Crawl-delay hint for lower-priority bots
+User-agent: AhrefsBot
+Crawl-delay: 5
+
+User-agent: SemrushBot
+Crawl-delay: 5

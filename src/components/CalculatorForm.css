@@ -1,0 +1,265 @@
+.calculator-form-container {
+  width: 100%;
+}
+
+.calculator-form-card {
+  background: white;
+  border: 3px solid #1f2937;
+  box-shadow: 8px 8px 0 #1f2937;
+  padding: 0;
+}
+
+/* Location Display */
+.location-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: #fbbf24;
+  border-bottom: 3px solid #1f2937;
+}
+
+.location-icon {
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+}
+
+.location-text {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.location-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.location-value {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.location-pincode {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.location-change-btn {
+  background: #1f2937;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.location-change-btn:hover {
+  background: #374151;
+  transform: translateY(-2px);
+}
+
+/* Form */
+.calculator-form {
+  padding: 32px 24px;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: #1f2937;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 3px solid #1f2937;
+  background: white;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  transition: all 0.2s;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #fbbf24;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+}
+
+.form-input.error,
+.form-select.error {
+  border-color: #ef4444;
+}
+
+.error-message {
+  display: block;
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+/* Radio Group */
+.radio-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.radio-card {
+  position: relative;
+  border: 3px solid #d1d5db;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+
+.radio-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.radio-card.selected {
+  border-color: #fbbf24;
+  background: #fffbeb;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+}
+
+.radio-card:hover {
+  border-color: #fbbf24;
+}
+
+.radio-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.radio-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #1f2937;
+  text-transform: uppercase;
+}
+
+.radio-price {
+  font-weight: 900;
+  font-size: 18px;
+  color: #fbbf24;
+}
+
+.radio-desc {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Checkbox */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.form-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #fbbf24;
+}
+
+/* Calculate Button */
+.calculate-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: #1f2937;
+  border: 3px solid #1f2937;
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s;
+  box-shadow: 4px 4px 0 #1f2937;
+}
+
+.calculate-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1f2937;
+}
+
+.calculate-btn:active {
+  transform: translate(0, 0);
+  box-shadow: 2px 2px 0 #1f2937;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .calculator-form-card {
+    box-shadow: 4px 4px 0 #1f2937;
+  }
+
+  .calculator-form {
+    padding: 24px 16px;
+  }
+
+  .form-title {
+    font-size: 20px;
+  }
+
+  .radio-group {
+    grid-template-columns: 1fr;
+  }
+
+  .location-display {
+    padding: 12px 16px;
+  }
+
+  .location-text {
+    font-size: 14px;
+  }
+
+  .calculate-btn {
+    font-size: 16px;
+    padding: 14px 20px;
+  }
+}

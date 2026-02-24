@@ -1,3 +1,5 @@
+@import './styles/animations.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,6 +9,7 @@
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #f5f5f5;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -16,71 +19,93 @@
 }
 
 @layer components {
+  /* Construction Theme Buttons */
   .btn-primary {
-    background-color: #f97316;
-    color: white;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #FDB913 0%, #FF6B35 100%);
+    color: #1a1a1a;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(253, 185, 19, 0.4);
+    border: 3px solid #1a1a1a;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .btn-primary:hover::before {
+    left: 100%;
   }
   
   .btn-primary:hover {
-    background-color: #ea580c;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(253, 185, 19, 0.6);
   }
   
   .btn-primary:active {
-    transform: scale(0.95);
+    transform: translateY(0);
   }
 
   .btn-secondary {
-    background-color: #262626;
-    color: white;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background-color: #1a1a1a;
+    color: #FDB913;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: 3px solid #FDB913;
   }
   
   .btn-secondary:hover {
-    background-color: #404040;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .btn-secondary:active {
-    transform: scale(0.95);
+    background-color: #2a2a2a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(253, 185, 19, 0.3);
   }
 
   .btn-outline {
-    border: 2px solid #f97316;
-    color: #f97316;
+    border: 3px solid #FDB913;
+    color: #1a1a1a;
     background: transparent;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
   }
   
   .btn-outline:hover {
-    background-color: #f97316;
-    color: white;
-  }
-  
-  .btn-outline:active {
-    transform: scale(0.95);
+    background-color: #FDB913;
+    color: #1a1a1a;
+    transform: translateY(-2px);
   }
 
   .btn-whatsapp {
     background-color: #25D366;
     color: white;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    border: 3px solid #1a1a1a;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -88,78 +113,106 @@
   
   .btn-whatsapp:hover {
     background-color: #20BA5A;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .btn-whatsapp:active {
-    transform: scale(0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
   }
 
+  /* Construction Theme Cards */
   .card {
     background-color: white;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    box-shadow: 5px 5px 0 #1a1a1a;
+    transition: all 0.3s ease;
     overflow: hidden;
-    transition: all 0.3s;
+    border: 3px solid #1a1a1a;
   }
   
   .card:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0 #1a1a1a;
   }
 
+  /* Construction Theme Badges */
   .badge {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
     padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    border-radius: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 2px solid #1a1a1a;
   }
 
   .badge-success {
-    background-color: #dcfce7;
-    color: #15803d;
+    background-color: #22c55e;
+    color: #1a1a1a;
   }
 
   .badge-orange {
-    background-color: #ffedd5;
-    color: #c2410c;
+    background-color: #FDB913;
+    color: #1a1a1a;
   }
 
+  .badge-warning {
+    background-color: #FF6B35;
+    color: white;
+  }
+
+  /* Input Fields - Construction Style */
   .input-field {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #d4d4d4;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
+    border: 3px solid #1a1a1a;
+    border-radius: 0;
+    background-color: white;
+    transition: all 0.2s ease;
+    font-weight: 500;
   }
   
   .input-field:focus {
     outline: none;
-    border-color: #f97316;
-    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    border-color: #FDB913;
+    box-shadow: 0 0 0 3px rgba(253, 185, 19, 0.2);
   }
 
+  /* Section Titles */
   .section-title {
     font-family: 'Poppins', 'Inter', sans-serif;
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: #171717;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #FDB913, #FF6B35);
   }
   
   @media (min-width: 768px) {
     .section-title {
-      font-size: 2.5rem;
+      font-size: 3rem;
     }
   }
   
   @media (min-width: 1024px) {
     .section-title {
-      font-size: 3rem;
+      font-size: 3.5rem;
     }
   }
 
+  /* Container */
   .container-custom {
     max-width: 80rem;
     margin-left: auto;
@@ -181,80 +234,72 @@
       padding-right: 2rem;
     }
   }
-}
 
-@layer utilities {
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out;
+  /* Construction Theme Specific */
+  .construction-header {
+    background: #1a1a1a;
+    border-bottom: 5px solid #FDB913;
   }
 
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out;
+  .construction-section {
+    background: #1a1a1a;
+    color: white;
+    position: relative;
   }
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .gradient-orange {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  }
-
-  .text-gradient {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .construction-accent {
+    color: #FDB913;
   }
 }
 
-/* WhatsApp Floating Button */
-.whatsapp-float {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
+/* Sticky Header */
+.sticky-header {
+  position: sticky;
+  top: 0;
   z-index: 1000;
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background: #1a1a1a;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
 }
 
-/* Loading skeleton */
-.skeleton {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  background-color: #e5e5e5;
-  border-radius: 0.25rem;
+/* Custom Scrollbar - Construction Theme */
+::-webkit-scrollbar {
+  width: 12px;
 }
 
-/* Image lazy load fade */
-.lazy-image {
-  opacity: 0;
-  transition: opacity 0.3s;
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
 }
 
-.lazy-image.loaded {
-  opacity: 1;
+::-webkit-scrollbar-thumb {
+  background: #FDB913;
+  border: 2px solid #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF6B35;
+}
+
+/* Selection Color */
+::selection {
+  background: #FDB913;
+  color: #1a1a1a;
+}
+
+::-moz-selection {
+  background: #FDB913;
+  color: #1a1a1a;
+}
+
+/* ── Product Detail: mobile sticky bar safe area (iPhone home indicator) ── */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.h-safe-bottom {
+  height: env(safe-area-inset-bottom, 0px);
 }

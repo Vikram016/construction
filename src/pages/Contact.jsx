@@ -1,10 +1,19 @@
+import PageSEO from '../components/PageSEO';
+import { PAGE_SEO, LOCAL_BUSINESS_SCHEMA, SITE } from '../config/seoConfig';
+
 const Contact = () => {
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210';
   const warehouseLat = import.meta.env.VITE_WAREHOUSE_LAT || '28.6139';
   const warehouseLng = import.meta.env.VITE_WAREHOUSE_LNG || '77.2090';
 
   return (
-    <div className="min-h-screen">
+    <>
+      <PageSEO
+        config={PAGE_SEO.contact}
+        schemas={[LOCAL_BUSINESS_SCHEMA]}
+        breadcrumbs={[{ name: 'Home', url: SITE.url }, { name: 'Contact', url: SITE.url + '/contact' }]}
+      />
+      <div className="min-h-screen">
       {/* Page Header */}
       <section className="bg-construction-darkGray text-white py-12">
         <div className="container mx-auto px-4">
@@ -169,7 +178,8 @@ const Contact = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
