@@ -23,7 +23,7 @@ const Contact = () => {
             <h1 className="font-display text-5xl mb-4">
               <span className="text-construction-yellow">CONTACT US</span>
             </h1>
-            <p className="text-construction-back max-w-2xl">
+            <p className="text-construction-lightGray max-w-2xl">
               Get in touch for orders, quotes, or any queries about construction
               materials
             </p>
