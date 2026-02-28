@@ -1,33 +1,28 @@
 // src/components/ScrollToTop.jsx
-// Global scroll-to-top on route change
-// Fixes the bug where navigating loads page at bottom instead of top
+// Scroll to top on every route change — iOS Safari compatible
 
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-/**
- * ScrollToTop Component
- * 
- * Automatically scrolls window to top on every route change.
- * Works on all devices: desktop, laptop, tablet, mobile.
- * 
- * Usage: Place inside <Router> but before <Routes>
- */
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Scroll to top instantly on route change
-    // behavior: "auto" = instant (no smooth scroll)
-    // This ensures immediate scroll on all devices
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'auto'
+    // iOS Safari sometimes ignores window.scrollTo inside useEffect
+    // requestAnimationFrame ensures it fires after the browser paints
+    const raf = requestAnimationFrame(() => {
+      try {
+        // Modern approach — 'instant' supported in iOS 15.4+
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      } catch {
+        // Fallback for older iOS Safari
+        window.scrollTo(0, 0);
+      }
     });
-  }, [pathname]); // Trigger on pathname change
+    return () => cancelAnimationFrame(raf);
+  }, [pathname]);
 
-  return null; // This component renders nothing
+  return null;
 };
 
 export default ScrollToTop;
