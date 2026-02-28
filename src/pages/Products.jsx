@@ -352,32 +352,6 @@ const AREAS = [
   "Electronic City",
   "Hebbal",
 ];
-const GALLERY = [
-  {
-    src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=400&fit=crop",
-    alt: "Jelly aggregate supply",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1544714042-2a1caefc77ce?w=500&h=300&fit=crop",
-    alt: "Sand delivery Bangalore",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=300&fit=crop",
-    alt: "Red bricks supplier",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=500&h=300&fit=crop",
-    alt: "Concrete blocks dealer",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&h=300&fit=crop",
-    alt: "Building materials delivery",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1601933973783-43cf8a7d4c5f?w=500&h=300&fit=crop",
-    alt: "Tractor load delivery",
-  },
-];
 
 /* ── Qty stepper with manual entry ── */
 const QtyStep = ({ qty, setQty }) => {
@@ -1199,35 +1173,6 @@ const Products = () => {
               >
                 <CallIcon cls="w-4 h-4" /> Call Sales Team
               </button>
-            </div>
-          </div>
-        </section>
-
-        {/* ── GALLERY ── */}
-        <section className="py-16 md:py-20">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <SH
-              title="Delivery in Action"
-              subtitle="Real deliveries across Bangalore — reliable, on time, every time"
-            />
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-              {GALLERY.map((img, i) => (
-                <div
-                  key={i}
-                  className={
-                    "overflow-hidden rounded-2xl shadow-sm" +
-                    (i === 0 ? " row-span-2" : "")
-                  }
-                >
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    loading="lazy"
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                    style={{ minHeight: i === 0 ? "320px" : "150px" }}
-                  />
-                </div>
-              ))}
             </div>
           </div>
         </section>
