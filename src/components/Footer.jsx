@@ -91,7 +91,7 @@ const Footer = () => {
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed mb-5">
               Bangalore's trusted supplier for premium construction materials and site services.
-              GST invoiced. 24–48 hr delivery. Trusted by 5,000+ builders.
+              Trusted supplier. 24–48 hr delivery. Trusted by 5,000+ builders.
             </p>
             {/* WhatsApp CTA */}
             <a href={`https://wa.me/${whatsapp}?text=Hi! I need construction materials in Bangalore.`}

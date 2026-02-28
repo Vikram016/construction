@@ -287,7 +287,7 @@ const ServiceLayout = ({ config, children }) => {
               <div className="bg-white border-2 border-neutral-200 rounded-2xl p-5">
                 <h2 className="text-sm font-black text-neutral-900 mb-3">🔒 Why trust BuildMart?</h2>
                 <ul className="space-y-2 text-sm text-neutral-600">
-                  <li className="flex items-center gap-2"><span className="text-green-500 font-black">✓</span> GST invoice on every order</li>
+                  <li className="flex items-center gap-2"><span className="text-green-500 font-black">✓</span> Invoice on every order</li>
                   <li className="flex items-center gap-2"><span className="text-green-500 font-black">✓</span> Advance via Razorpay (secured)</li>
                   <li className="flex items-center gap-2"><span className="text-green-500 font-black">✓</span> 5,000+ builders served</li>
                   <li className="flex items-center gap-2"><span className="text-green-500 font-black">✓</span> Refund if we can't fulfil</li>

@@ -239,8 +239,6 @@ const TrackOrder = () => {
                   <span className="font-bold text-neutral-900">₹{order.subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-neutral-600">GST (18%)</span>
-                  <span className="font-bold text-neutral-900">₹{order.gst.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-600">Delivery</span>

@@ -3,6 +3,10 @@ const admin = require('firebase-admin');
 // Initialize Firebase Admin
 admin.initializeApp();
 
+
+// ── Google Reviews (fetches from Places API server-side, 24hr cache) ──────────
+const { getGoogleReviews } = require('./googleReviews');
+exports.getGoogleReviews = getGoogleReviews;
 // ── Razorpay Payment Webhook ──────────────────────────────────────────────────
 // Receives payment.captured / payment.failed events from Razorpay,
 // updates Firestore order → triggers WhatsApp notification + Google Sheets sync
@@ -74,18 +78,18 @@ exports.sendEstimateAcknowledgmentWhatsApp = sendEstimateAcknowledgmentWhatsApp;
 exports.sendPaymentReminders = sendPaymentReminders;
 exports.resendWhatsAppNotification = resendWhatsAppNotification;
 
-// Export Invoice Generation Triggers
+// Export Invoice Triggers — generates + sends invoice on every new order
 const {
-  generateInvoiceOnOrderConfirmation,
-  generateInvoiceOnOrderCreation,
-  regenerateInvoice,
-  cleanupOldInvoices
+  generateAndSendInvoiceOnOrderCreation,
+  resendInvoiceOnStatusChange,
+  resendInvoiceManually,
+  cleanupOldInvoices,
 } = require('./invoiceTriggers');
 
-exports.generateInvoiceOnOrderConfirmation = generateInvoiceOnOrderConfirmation;
-exports.generateInvoiceOnOrderCreation = generateInvoiceOnOrderCreation;
-exports.regenerateInvoice = regenerateInvoice;
-exports.cleanupOldInvoices = cleanupOldInvoices;
+exports.generateAndSendInvoiceOnOrderCreation = generateAndSendInvoiceOnOrderCreation;
+exports.resendInvoiceOnStatusChange            = resendInvoiceOnStatusChange;
+exports.resendInvoiceManually                  = resendInvoiceManually;
+exports.cleanupOldInvoices                     = cleanupOldInvoices;
 
 // Export Delivery Routing & Invoice Preference (NEW)
 const {

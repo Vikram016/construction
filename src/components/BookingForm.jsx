@@ -224,7 +224,7 @@ const BookingForm = ({
       <div className="bg-white border-2 border-neutral-200 rounded-2xl p-6 md:p-8 shadow-sm">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <h2 className="text-xl md:text-2xl font-black text-neutral-900">📋 Booking Details</h2>
-          <span className={`text-xs font-bold px-3 py-1 rounded-full border ${c.tag}`}>GST Invoice Included</span>
+          <span className={`text-xs font-bold px-3 py-1 rounded-full border ${c.tag}`}>Invoice Included</span>
         </div>
 
         <div className="space-y-5">
@@ -332,7 +332,7 @@ const BookingForm = ({
         </div>
 
         <p className="mt-4 text-xs text-neutral-400 text-center leading-relaxed">
-          GST invoice included · {razorpayUrl ? 'Balance payable on delivery · Advance secures your slot' : 'We will confirm your booking within 2 hours'}
+          Invoice included · {razorpayUrl ? 'Balance payable on delivery · Advance secures your slot' : 'We will confirm your booking within 2 hours'}
         </p>
       </div>
     </div>

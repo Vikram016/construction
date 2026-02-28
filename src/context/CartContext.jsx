@@ -49,27 +49,26 @@ export const CartProvider = ({ children }) => {
 
   // Derived totals
   const subtotal   = useMemo(() => cartItems.reduce((t, i) => t + i.basePrice * i.quantity, 0), [cartItems]);
-  const gst        = useMemo(() => subtotal * 0.18, [subtotal]);
   const cartCount  = useMemo(() => cartItems.reduce((t, i) => t + i.quantity, 0), [cartItems]);
 
   // Waste collection — uses existing util, safe fallback if util missing
   const wasteCollectionInfo = useMemo(() => {
     try {
-      return getWasteCollectionInfo(subtotal + gst + deliveryCharge, wasteCollectionSelected);
+      return getWasteCollectionInfo(subtotal + deliveryCharge, wasteCollectionSelected);
     } catch {
       return { isSelected: wasteCollectionSelected, fee: 0, isFree: false, displayText: '', whatsappText: '', invoiceText: '' };
     }
-  }, [subtotal, gst, deliveryCharge, wasteCollectionSelected]);
+  }, [subtotal, deliveryCharge, wasteCollectionSelected]);
 
   const wasteCollectionFee    = wasteCollectionInfo.fee    ?? 0;
   const wasteCollectionIsFree = wasteCollectionInfo.isFree ?? false;
-  const grandTotal = subtotal + gst + deliveryCharge + (wasteCollectionSelected ? wasteCollectionFee : 0);
+  const grandTotal = subtotal + deliveryCharge + (wasteCollectionSelected ? wasteCollectionFee : 0);
 
   return (
     <CartContext.Provider value={{
       // state
       cartItems, cartCount,
-      subtotal, gst, deliveryCharge, grandTotal,
+      subtotal, deliveryCharge, grandTotal,
       // waste collection
       wasteCollectionSelected, wasteCollectionInfo,
       wasteCollectionFee, wasteCollectionIsFree,

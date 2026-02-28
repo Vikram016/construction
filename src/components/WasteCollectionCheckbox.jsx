@@ -7,11 +7,10 @@ const WasteCollectionCheckbox = () => {
     wasteCollectionIsFree,
     toggleWasteCollection,
     subtotal,
-    gst,
     deliveryCharge
   } = useCart();
 
-  const baseTotal = subtotal + gst + deliveryCharge;
+  const baseTotal = subtotal + deliveryCharge;
   const threshold = 10000;
 
   return (

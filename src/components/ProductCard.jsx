@@ -57,12 +57,7 @@ const ProductCard = ({ product }) => {
             </svg>
           </div>
         )}
-        {/* GST badge */}
-        {product.gstPercentage && (
-          <span className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-xs font-semibold text-neutral-600 px-2 py-0.5 rounded-full border border-neutral-200">
-            GST {product.gstPercentage}%
-          </span>
-        )}
+
       </div>
 
       {/* Info */}

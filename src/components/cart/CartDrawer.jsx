@@ -21,7 +21,6 @@ const CartDrawer = ({ isOpen, onClose }) => {
     cartItems,
     cartCount,
     subtotal,
-    gst,
     grandTotal,
     updateQuantity,
     removeFromCart,
@@ -205,8 +204,6 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 <span className="font-semibold">₹{subtotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-neutral-600">GST (18%)</span>
-                <span className="font-semibold">₹{gst.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-lg font-bold border-t-2 border-neutral-300 pt-2">
                 <span>Total</span>

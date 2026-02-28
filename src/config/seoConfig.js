@@ -107,13 +107,13 @@ export const PAGE_SEO = {
   },
 
   products: {
-    title:       `Buy Construction Materials in ${GEO.city} — Cement, Steel, Bricks, Sand | BuildMart`,
-    description: `Shop 50+ premium construction materials for delivery in ${GEO.city}. OPC cement, TMT steel, AAC blocks, M-sand, coarse aggregate. Transparent pricing. GST invoice on every order.`,
-    keywords:    `buy cement Bangalore, TMT steel bars Bengaluru, AAC blocks Bangalore, construction sand Karnataka, aggregate supplier Bangalore, bricks online Bengaluru`,
+    title:       `Building Materials Supplier in ${GEO.city} — M-Sand, River Sand, Bricks, Blocks, Cement | BuildMart`,
+    description: `BuildMart — trusted building materials supplier in ${GEO.city}. M-Sand, River Sand, P-Sand, Red Bricks, Concrete Blocks, Weightless Blocks, Tractor Loads, Cement. Fast delivery to Angondhalli, Whitefield, Hoskote, KR Puram, Marathahalli.`,
+    keywords:    `building materials supplier Bangalore, M-Sand supplier Angondhalli, river sand delivery Whitefield, bricks supplier Hoskote, concrete blocks KR Puram, cement dealer Bangalore, tractor load sand Marathahalli`,
     canonical:   `${SITE.url}/products`,
     og: {
-      title:       `Shop Construction Materials — BuildMart ${GEO.city}`,
-      description: `50+ products. GST invoice. Delivered to your site in ${GEO.city} within 24–48 hrs.`,
+      title:       `Building Materials Supplier — BuildMart ${GEO.city}`,
+      description: `M-Sand, River Sand, Bricks, Blocks, Cement. Tractor load delivery across ${GEO.city}. Competitive prices.`,
       image:       `${SITE.url}/og-products.jpg`,
     },
   },

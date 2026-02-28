@@ -1,7 +1,7 @@
 import { useCart } from '../context/CartContext';
 
 const OrderSummary = () => {
-  const { cartItems, subtotal, gst, deliveryCharge, grandTotal, wasteCollectionInfo = {} } = useCart();
+  const { cartItems, subtotal, deliveryCharge, grandTotal, wasteCollectionInfo = {} } = useCart();
 
   if (cartItems.length === 0) {
     return (
@@ -42,11 +42,6 @@ const OrderSummary = () => {
         <div className="flex justify-between text-neutral-700">
           <span>Subtotal</span>
           <span className="font-semibold">₹{subtotal.toLocaleString()}</span>
-        </div>
-
-        <div className="flex justify-between text-neutral-700">
-          <span>GST (18%)</span>
-          <span className="font-semibold">₹{gst.toLocaleString()}</span>
         </div>
 
         <div className="flex justify-between text-neutral-700">

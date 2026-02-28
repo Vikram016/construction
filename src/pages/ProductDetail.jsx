@@ -106,12 +106,10 @@ const ProductDetail = () => {
   /* ── Memoized live price calculation ── */
   const priceData = useMemo(() => {
     const basePrice = product?.basePrice || 0;
-    const gstPct = product?.gstPercentage || 0;
     const subtotal = basePrice * qty;
-    const gstAmt = subtotal * (gstPct / 100);
-    const total = subtotal + gstAmt;
-    return { basePrice, gstPct, subtotal, gstAmt, total };
-  }, [product?.basePrice, product?.gstPercentage, qty]);
+    const total = subtotal;
+    return { basePrice, subtotal, total };
+  }, [product?.basePrice, qty]);
 
   /* ── Cart feedback ── */
   const [addedToCart, setAddedToCart] = useState(false);
@@ -361,10 +359,9 @@ const ProductDetail = () => {
                 {[
                   { emoji: '🏷️', label: 'Category', val: product.category },
                   { emoji: '📦', label: 'Unit', val: product.unit },
-                  { emoji: '📋', label: 'GST', val: `${priceData.gstPct}%` },
                   { emoji: '🚚', label: 'Delivery', val: '24-48 hrs' },
                   { emoji: '✅', label: 'Stock', val: stockLabel, cls: stockColor },
-                  { emoji: '🧾', label: 'Invoice', val: 'GST Bill' },
+                  { emoji: '🧾', label: 'Invoice', val: 'Included' },
                 ].map(s => (
                   <div key={s.label} className="bg-neutral-50 rounded-xl px-3 sm:px-4 py-3 border border-neutral-100">
                     <p className="text-base">{s.emoji}</p>
@@ -454,8 +451,6 @@ const ProductDetail = () => {
                   <span className="font-semibold transition-all">₹{priceData.subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-neutral-500">GST ({priceData.gstPct}%)</span>
-                  <span className="font-semibold transition-all">₹{priceData.gstAmt.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-neutral-500">Shipping</span>
@@ -513,7 +508,7 @@ const ProductDetail = () => {
               <div className="bg-construction-yellow/15 border border-construction-yellow/50 rounded-xl p-4 text-center space-y-1">
                 <p className="text-xs text-neutral-600 uppercase font-semibold tracking-wider">Your Total</p>
                 <p className="text-4xl font-black text-neutral-900">₹{priceData.total.toLocaleString()}</p>
-                <p className="text-xs text-neutral-500">{qty} {product.unit} · incl. {priceData.gstPct}% GST</p>
+                <p className="text-xs text-neutral-500">{qty} {product.unit}</p>
               </div>
 
               {/* Buy Now - Adds to cart and navigates to /cart */}
@@ -531,7 +526,7 @@ const ProductDetail = () => {
                 <WAIcon /> Get Quotation
               </button>
 
-              <p className="text-xs text-center text-neutral-400">🔒 Secure checkout · GST bill · Fast delivery</p>
+              <p className="text-xs text-center text-neutral-400">🔒 Secure checkout · Invoice included · Fast delivery</p>
             </div>
 
           </div>
