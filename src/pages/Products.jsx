@@ -3,12 +3,14 @@
  * Full price list + quantity selectors + add to cart + tractor wizard
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { SITE, GEO } from "../config/seoConfig";
 import { CONTACT_CONFIG } from "../config/contactConfig";
 import { useCart } from "../context/CartContext";
+import { db } from "../firebase/firebaseConfig";
+import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
 
 const wa = (msg) => {
   const n = CONTACT_CONFIG.whatsapp || SITE.whatsapp;
@@ -900,8 +902,94 @@ const TractorWizard = () => {
 };
 
 /* ════ MAIN ═════════════════════════════════════════════════════════════════ */
+
+/* Group Firestore flat products into PRICE_SECTIONS shape */
+const groupIntoSections = (firestoreProducts) => {
+  // Map category id → section meta from static PRICE_SECTIONS
+  const sectionMeta = {};
+  PRICE_SECTIONS.forEach((s) => {
+    sectionMeta[s.category] = {
+      id: s.id,
+      title: s.title,
+      emoji: s.emoji,
+      unit: s.unit,
+      img: s.img,
+    };
+  });
+
+  const grouped = {};
+  firestoreProducts.forEach((p) => {
+    const cat = p.category || "other";
+    const meta = sectionMeta[cat] || {
+      id: cat,
+      title: cat,
+      emoji: "📦",
+      unit: p.unit || "per unit",
+      img: "",
+    };
+    if (!grouped[cat]) grouped[cat] = { ...meta, category: cat, items: [] };
+    grouped[cat].items.push({
+      id: p.id,
+      name: p.name,
+      price: Number(p.price) || 0,
+      usedFor: p.usedFor || "",
+      img: p.img || "",
+    });
+  });
+
+  // Preserve original section order
+  const ORDER = [
+    "Jelly",
+    "Sand",
+    "Bricks",
+    "Concrete Blocks",
+    "Weightless Blocks",
+    "Cement",
+  ];
+  const ordered = ORDER.map((cat) => grouped[cat]).filter(Boolean);
+  Object.keys(grouped).forEach((cat) => {
+    if (!ORDER.includes(cat)) ordered.push(grouped[cat]);
+  });
+  return ordered;
+};
+
 const Products = () => {
   const { cartCount } = useCart();
+
+  // ── Firestore product loading with static fallback ──────────────────────
+  const [liveSections, setLiveSections] = useState(null); // null = loading, [] = empty
+  const [loadingLive, setLoadingLive] = useState(true);
+
+  useEffect(() => {
+    const fetchLive = async () => {
+      try {
+        const q = query(
+          collection(db, "products"),
+          where("isActive", "==", true),
+          orderBy("createdAt", "desc"),
+        );
+        const snap = await getDocs(q);
+        const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        if (docs.length > 0) {
+          setLiveSections(groupIntoSections(docs));
+        } else {
+          setLiveSections(null); // use static fallback
+        }
+      } catch (e) {
+        console.info(
+          "[Products] Firestore unavailable — using static data:",
+          e.message,
+        );
+        setLiveSections(null);
+      } finally {
+        setLoadingLive(false);
+      }
+    };
+    fetchLive();
+  }, []);
+
+  // Use Firestore data if available, otherwise fall back to static PRICE_SECTIONS
+  const displaySections = liveSections || PRICE_SECTIONS;
 
   return (
     <>
@@ -1074,7 +1162,7 @@ const Products = () => {
             />
 
             <div className="grid md:grid-cols-2 gap-5 lg:gap-6">
-              {PRICE_SECTIONS.map((sec) => (
+              {displaySections.map((sec) => (
                 <div
                   key={sec.id}
                   id={sec.id}
