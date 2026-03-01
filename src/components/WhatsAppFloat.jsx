@@ -1,9 +1,7 @@
 /**
  * WhatsAppFloat.jsx
- * Persistent floating WhatsApp button — appears on all pages.
- * Uses CONTACT_CONFIG as single source of truth.
- * On service pages the ServiceLayout mobile sticky bar takes over at bottom,
- * so this floats at bottom-right above it (lg: always visible).
+ * Persistent floating WhatsApp button
+ * Fixed: moved higher on mobile so it never covers cart/checkout buttons
  */
 
 import { useLocation } from 'react-router-dom';
@@ -22,8 +20,10 @@ const WhatsAppFloat = () => {
   const message  = SERVICE_MESSAGES[location.pathname] || DEFAULT_MESSAGE;
   const { whatsapp } = CONTACT_CONFIG;
 
-  // On service pages, hide on mobile (ServiceLayout has its own sticky bar)
   const isServicePage = location.pathname.startsWith('/services/');
+
+  // Hide on cart and checkout pages on mobile — buttons are already prominent there
+  const isCartPage = location.pathname === '/cart' || location.pathname === '/checkout';
 
   return (
     <a
@@ -31,11 +31,13 @@ const WhatsAppFloat = () => {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      className={`fixed z-50 bottom-6 right-4 md:right-6 transition-all duration-200 ${
-        isServicePage ? 'hidden lg:flex' : 'flex'
-      } items-center group`}
+      className={`fixed z-40 right-4 md:right-6 transition-all duration-200
+        ${isServicePage ? 'hidden lg:flex' : 'flex'}
+        ${isCartPage ? 'hidden md:flex' : ''}
+        bottom-20 md:bottom-6
+        items-center group`}
     >
-      {/* Tooltip label — visible on hover */}
+      {/* Tooltip */}
       <span className="
         mr-3 bg-neutral-900 text-white text-xs font-bold px-3 py-1.5 rounded-full
         opacity-0 group-hover:opacity-100 transition-opacity duration-200
@@ -51,8 +53,7 @@ const WhatsAppFloat = () => {
         flex items-center justify-center
         shadow-[0_4px_20px_rgba(37,211,102,0.4)]
         hover:shadow-[0_4px_28px_rgba(37,211,102,0.6)]
-        hover:scale-110
-        active:scale-95
+        hover:scale-110 active:scale-95
         transition-all duration-200
       ">
         <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
