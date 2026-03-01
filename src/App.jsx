@@ -39,6 +39,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Login = lazy(() => import("./pages/Login"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminProducts = lazy(() => import("./pages/AdminProducts"));
+const AdminBlogs = lazy(() => import("./pages/AdminBlogs"));
 
 /* ── Loading skeleton ────────────────────────────────────────────────────── */
 const PageLoader = () => (
@@ -168,6 +169,14 @@ function App() {
                           element={
                             <ProtectedRoute requireAdmin={true}>
                               <AdminProducts />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path="/admin/blogs"
+                          element={
+                            <ProtectedRoute requireAdmin={true}>
+                              <AdminBlogs />
                             </ProtectedRoute>
                           }
                         />

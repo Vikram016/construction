@@ -156,7 +156,13 @@ const Admin = () => {
             to="/admin/products"
             className="bg-orange-500 hover:bg-orange-400 text-white font-bold px-4 py-2 rounded-lg text-sm transition-colors border-2 border-orange-700 flex items-center gap-2"
           >
-            🏗 Product Manager
+            🏗 Products
+          </Link>
+          <Link
+            to="/admin/blogs"
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-lg text-sm transition-colors border-2 border-blue-800 flex items-center gap-2"
+          >
+            ✍️ Blog Posts
           </Link>
           <button
             onClick={() => {

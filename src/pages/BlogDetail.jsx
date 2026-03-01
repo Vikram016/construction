@@ -1,10 +1,49 @@
 import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { blogsData } from "../data/blogs";
 import BlogCard from "../components/BlogCard";
+import { db } from "../firebase/firebaseConfig";
+import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
 
 const BlogDetail = () => {
   const { slug } = useParams();
-  const blog = blogsData.find((b) => b.slug === slug);
+  const [blog, setBlog] = useState(
+    blogsData.find((b) => b.slug === slug) || null,
+  );
+  const [allBlogs, setAllBlogs] = useState(blogsData);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const q = query(
+          collection(db, "blogs"),
+          where("isActive", "!=", false),
+          orderBy("publishedAt", "desc"),
+        );
+        const snap = await getDocs(q);
+        const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        if (docs.length > 0) {
+          setAllBlogs(docs);
+          const found = docs.find((b) => b.slug === slug);
+          if (found) setBlog(found);
+        }
+      } catch (e) {
+        console.info("[BlogDetail] Firestore unavailable — using static data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!blog) {
     return (
@@ -27,7 +66,7 @@ const BlogDetail = () => {
     });
   };
 
-  const relatedBlogs = blogsData
+  const relatedBlogs = allBlogs
     .filter((b) => b.category === blog.category && b.id !== blog.id)
     .slice(0, 3);
 
