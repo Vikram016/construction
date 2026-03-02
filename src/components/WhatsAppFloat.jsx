@@ -1,53 +1,71 @@
 /**
  * WhatsAppFloat.jsx
- * Persistent floating WhatsApp button
- * Fixed: moved higher on mobile so it never covers cart/checkout buttons
+ * Smart floating WhatsApp button — page-aware positioning
+ *
+ * /products        → HIDDEN (page has its own Call/WhatsApp/Cart sticky bar)
+ * /cart /checkout  → HIDDEN on mobile (page has prominent action buttons)
+ * /services/*      → HIDDEN on mobile (ServiceLayout has its own sticky bar)
+ * All other pages  → bottom-right corner, always visible on mobile
  */
 
-import { useLocation } from 'react-router-dom';
-import { CONTACT_CONFIG } from '../config/contactConfig';
+import { useLocation } from "react-router-dom";
+import { CONTACT_CONFIG } from "../config/contactConfig";
 
 const SERVICE_MESSAGES = {
-  '/services/waste-sand':  'Hi! I want to book Waste Sand Collection in Bangalore. Please share details.',
-  '/services/debris-sand': 'Hi! I want to order Debris Sand delivery in Bangalore. Please share pricing.',
-  '/services/site-clean':  'Hi! I need Construction Site Cleaning in Bangalore. Please share packages and availability.',
+  "/services/waste-sand":
+    "Hi! I want to book Waste Sand Collection in Bangalore. Please share details.",
+  "/services/debris-sand":
+    "Hi! I want to order Debris Sand delivery in Bangalore. Please share pricing.",
+  "/services/site-clean":
+    "Hi! I need Construction Site Cleaning in Bangalore. Please share packages and availability.",
 };
 
-const DEFAULT_MESSAGE = 'Hi! I need construction materials or services in Bangalore. Please help.';
+const DEFAULT_MESSAGE =
+  "Hi! I need construction materials or services in Bangalore. Please help.";
 
 const WhatsAppFloat = () => {
   const location = useLocation();
-  const message  = SERVICE_MESSAGES[location.pathname] || DEFAULT_MESSAGE;
   const { whatsapp } = CONTACT_CONFIG;
+  const path = location.pathname;
 
-  const isServicePage = location.pathname.startsWith('/services/');
+  const message = SERVICE_MESSAGES[path] || DEFAULT_MESSAGE;
 
-  // Hide on cart and checkout pages on mobile — buttons are already prominent there
-  const isCartPage = location.pathname === '/cart' || location.pathname === '/checkout';
+  // Pages where the float should be completely hidden on mobile
+  const hideOnMobile =
+    path === "/products" || // has its own sticky Call/WA/Cart bar
+    path === "/cart" || // has checkout button
+    path === "/checkout" || // has checkout button
+    path.startsWith("/services/"); // ServiceLayout has its own bar
 
+  // On desktop always show — just position bottom-right
+  // On mobile: hide on above pages, show on all others
   return (
     <a
       href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      className={`fixed z-40 right-4 md:right-6 transition-all duration-200
-        ${isServicePage ? 'hidden lg:flex' : 'flex'}
-        ${isCartPage ? 'hidden md:flex' : ''}
-        bottom-20 md:bottom-6
-        items-center group`}
+      className={[
+        "fixed z-40 right-4 bottom-6", // desktop: always bottom-right corner
+        "flex items-center group",
+        "transition-all duration-200",
+        hideOnMobile ? "hidden md:flex" : "flex", // mobile: hide on certain pages
+      ].join(" ")}
     >
-      {/* Tooltip */}
-      <span className="
+      {/* Tooltip — desktop hover only */}
+      <span
+        className="
         mr-3 bg-neutral-900 text-white text-xs font-bold px-3 py-1.5 rounded-full
         opacity-0 group-hover:opacity-100 transition-opacity duration-200
-        whitespace-nowrap shadow-lg pointer-events-none
-      ">
+        whitespace-nowrap shadow-lg pointer-events-none hidden md:block
+      "
+      >
         Chat on WhatsApp
       </span>
 
       {/* Button */}
-      <div className="
+      <div
+        className="
         bg-[#25D366] hover:bg-[#20BA5A]
         w-14 h-14 rounded-full
         flex items-center justify-center
@@ -55,9 +73,15 @@ const WhatsAppFloat = () => {
         hover:shadow-[0_4px_28px_rgba(37,211,102,0.6)]
         hover:scale-110 active:scale-95
         transition-all duration-200
-      ">
-        <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+      "
+      >
+        <svg
+          className="w-7 h-7 text-white"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
         </svg>
       </div>
     </a>

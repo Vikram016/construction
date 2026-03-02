@@ -40,6 +40,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminProducts = lazy(() => import("./pages/AdminProducts"));
 const AdminBlogs = lazy(() => import("./pages/AdminBlogs"));
+const Quote = lazy(() => import("./pages/Quote"));
 
 /* ── Loading skeleton ────────────────────────────────────────────────────── */
 const PageLoader = () => (
@@ -147,6 +148,7 @@ function App() {
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/checkout" element={<Checkout />} />
                         <Route path="/calculator" element={<Calculator />} />
+                        <Route path="/quote" element={<Quote />} />
                         <Route path="/blog" element={<Blog />} />
                         <Route path="/blog/:slug" element={<BlogDetail />} />
                         <Route path="/about" element={<About />} />

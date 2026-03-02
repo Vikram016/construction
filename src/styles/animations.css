@@ -4,11 +4,11 @@
 
 /* Color Variables - Construction Theme */
 :root {
-  --construction-yellow: #FDB913;
-  --construction-orange: #FF6B35;
+  --construction-yellow: #fdb913;
+  --construction-orange: #ff6b35;
   --construction-dark: #1a1a1a;
-  --construction-gray: #2C2C2C;
-  --construction-light-gray: #E5E5E5;
+  --construction-gray: #2c2c2c;
+  --construction-light-gray: #e5e5e5;
   --white: #ffffff;
 }
 
@@ -80,19 +80,33 @@
 }
 
 /* Stagger animation delays */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
-.stagger-6 { animation-delay: 0.6s; }
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+.stagger-5 {
+  animation-delay: 0.5s;
+}
+.stagger-6 {
+  animation-delay: 0.6s;
+}
 
 /* ========================================
    HOVER EFFECTS
    ======================================== */
 
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .hover-lift:hover {
@@ -114,10 +128,14 @@
 }
 
 .hover-glow::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -2px;
-  background: linear-gradient(45deg, var(--construction-yellow), var(--construction-orange));
+  background: linear-gradient(
+    45deg,
+    var(--construction-yellow),
+    var(--construction-orange)
+  );
   border-radius: inherit;
   opacity: 0;
   z-index: -1;
@@ -134,7 +152,7 @@
 }
 
 .hover-underline::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 0;
@@ -157,7 +175,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(253, 185, 19, 0.7);
   }
   50% {
@@ -171,13 +190,18 @@
 }
 
 .btn-shine::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -100%;
   width: 100%;
   height: 200%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   transform: rotate(45deg);
   transition: left 0.6s ease;
 }
@@ -197,15 +221,16 @@
 }
 
 .construction-pattern::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background-image: 
-    repeating-linear-gradient(45deg, 
-      transparent, 
-      transparent 10px, 
-      rgba(253, 185, 19, 0.03) 10px, 
-      rgba(253, 185, 19, 0.03) 20px);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(253, 185, 19, 0.03) 10px,
+    rgba(253, 185, 19, 0.03) 20px
+  );
   z-index: 0;
 }
 
@@ -220,7 +245,7 @@
 }
 
 .grid-pattern {
-  background-image: 
+  background-image:
     linear-gradient(rgba(253, 185, 19, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(253, 185, 19, 0.05) 1px, transparent 1px);
   background-size: 30px 30px;
@@ -235,10 +260,14 @@
 }
 
 .bg-overlay::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(44, 44, 44, 0.9));
+  background: linear-gradient(
+    135deg,
+    rgba(26, 26, 26, 0.95),
+    rgba(44, 44, 44, 0.9)
+  );
   z-index: 1;
 }
 
@@ -248,10 +277,12 @@
 }
 
 .hero-gradient {
-  background: linear-gradient(135deg, 
-    var(--construction-dark) 0%, 
-    #2a2a2a 50%, 
-    var(--construction-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--construction-dark) 0%,
+    #2a2a2a 50%,
+    var(--construction-dark) 100%
+  );
 }
 
 /* ========================================
@@ -259,17 +290,23 @@
    ======================================== */
 
 .skeleton {
-  background: linear-gradient(90deg, 
-    var(--construction-light-gray) 25%, 
-    #d5d5d5 50%, 
-    var(--construction-light-gray) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--construction-light-gray) 25%,
+    #d5d5d5 50%,
+    var(--construction-light-gray) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .spinner {
@@ -282,7 +319,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ========================================
@@ -324,12 +363,13 @@
 .construction-border {
   border: 3px solid var(--construction-yellow);
   border-image: repeating-linear-gradient(
-    45deg,
-    var(--construction-yellow),
-    var(--construction-yellow) 10px,
-    var(--construction-dark) 10px,
-    var(--construction-dark) 20px
-  ) 1;
+      45deg,
+      var(--construction-yellow),
+      var(--construction-yellow) 10px,
+      var(--construction-dark) 10px,
+      var(--construction-dark) 20px
+    )
+    1;
 }
 
 .caution-tape {
@@ -352,7 +392,7 @@
 
 .rivet-effect::before,
 .rivet-effect::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 12px;
   height: 12px;
@@ -395,21 +435,7 @@
   }
 }
 
-.sticky-whatsapp {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  background: #25D366;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-  z-index: 999;
-  animation: bounceIn 0.6s ease-out, pulse 2s infinite 1s;
-}
+/* sticky-whatsapp removed — handled by WhatsAppFloat.jsx */
 
 @keyframes bounceIn {
   0% {
@@ -428,21 +454,7 @@
   }
 }
 
-.sticky-call {
-  position: fixed;
-  bottom: 150px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  background: var(--construction-orange);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
-  z-index: 999;
-  animation: bounceIn 0.6s ease-out 0.2s both;
-}
+/* sticky-call removed — handled by Products page sticky bar */
 
 /* Hide on desktop */
 @media (min-width: 768px) {
@@ -467,16 +479,21 @@
    ======================================== */
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--construction-yellow), var(--construction-orange));
+  background: linear-gradient(
+    135deg,
+    var(--construction-yellow),
+    var(--construction-orange)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .text-shadow-glow {
-  text-shadow: 0 0 20px rgba(253, 185, 19, 0.6),
-               0 0 40px rgba(253, 185, 19, 0.4),
-               0 0 60px rgba(253, 185, 19, 0.2);
+  text-shadow:
+    0 0 20px rgba(253, 185, 19, 0.6),
+    0 0 40px rgba(253, 185, 19, 0.4),
+    0 0 60px rgba(253, 185, 19, 0.2);
 }
 
 .text-stroke {
@@ -517,7 +534,7 @@
   font-size: 3rem;
   font-weight: bold;
   color: var(--construction-yellow);
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Bebas Neue", sans-serif;
 }
 
 /* ========================================
@@ -537,7 +554,7 @@
   .mobile-only {
     display: none;
   }
-  
+
   .desktop-only {
     display: block;
   }

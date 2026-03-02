@@ -9,48 +9,48 @@
 
 export const CONTACT_CONFIG = {
   // ── WhatsApp ─────────────────────────────────────────────────────────────
-  whatsapp:    import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210',
+  whatsapp: import.meta.env.VITE_WHATSAPP_NUMBER || "919876543210",
 
   // ── Voice call ────────────────────────────────────────────────────────────
-  phone:       import.meta.env.VITE_PHONE_DISPLAY   || '+91 98765 43210',
-  phoneRaw:    import.meta.env.VITE_WHATSAPP_NUMBER  || '919876543210',
+  phone: import.meta.env.VITE_PHONE_DISPLAY || "+91 98765 43210",
+  phoneRaw: import.meta.env.VITE_WHATSAPP_NUMBER || "919876543210",
 
   // ── Email ─────────────────────────────────────────────────────────────────
   email: {
-    sales:   'sales@buildmart.in',
-    support: 'support@buildmart.in',
-    info:    'info@buildmart.in',
+    sales: "sales@buildmart.in",
+    support: "support@buildmart.in",
+    info: "info@buildmart.in",
   },
 
   // ── Address — Bangalore (matches seoConfig GEO) ───────────────────────────
   address: {
-    street:  '12 Industrial Layout, Peenya Industrial Area',
-    city:    'Bangalore',
-    state:   'Karnataka',
-    pincode: '560058',
-    country: 'India',
-    full:    '12 Industrial Layout, Peenya Industrial Area, Bangalore, Karnataka 560058',
+    street: "#22/7, Marappa Road, Ulsoor,",
+    city: "Bengaluru",
+    state: "Karnataka",
+    pincode: "560008",
+    country: "India",
+    full: "#22/7, Marappa Road, Ulsoor, Bangalore, Karnataka - 560008",
   },
 
   // ── Hours ─────────────────────────────────────────────────────────────────
   hours: {
-    weekdays:  'Mon–Sat: 8 AM – 7 PM',
-    weekend:   'Sunday: Closed',
-    emergency: '24/7 WhatsApp Support',
+    weekdays: "Mon–Sat: 8 AM – 7 PM",
+    weekend: "Sunday: Closed",
+    emergency: "24/7 WhatsApp Support",
   },
 
   // ── Geo coordinates ───────────────────────────────────────────────────────
   location: {
-    lat: 12.9716,
-    lng: 77.5946,
+    lat: 12.976728439331055,
+    lng: 77.62850189208984,
   },
 
   // ── Social ────────────────────────────────────────────────────────────────
   social: {
-    facebook:  '',
-    instagram: '',
-    twitter:   '',
-    linkedin:  '',
+    facebook: "",
+    instagram: "",
+    twitter: "",
+    linkedin: "",
   },
 };
 
