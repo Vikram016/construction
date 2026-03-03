@@ -40,7 +40,7 @@ pnpm-debug.log*
 *.log
 
 
-.vite
+.vite/
 
 # Firebase
 .firebase/
