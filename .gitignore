@@ -41,3 +41,7 @@ pnpm-debug.log*
 
 
 .vite
+
+# Firebase
+.firebase/
+firebase-debug.log
