@@ -26,7 +26,7 @@ jobs:
 
       # 3. Install dependencies
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci --legacy-peer-deps
 
       # 4. Build — secrets injected directly as env vars (no .env file needed)
       - name: Build
