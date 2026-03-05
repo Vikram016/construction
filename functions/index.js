@@ -6,9 +6,8 @@ admin.initializeApp();
 // ── Google Reviews (fetches from Places API server-side, 24hr cache) ──────────
 const { getGoogleReviews } = require("./googleReviews");
 exports.getGoogleReviews = getGoogleReviews;
+
 // ── Razorpay Payment Webhook ──────────────────────────────────────────────────
-// Receives payment.captured / payment.failed events from Razorpay,
-// updates Firestore order → triggers WhatsApp notification + Google Sheets sync
 const { razorpayWebhook } = require("./razorpayWebhook");
 exports.razorpayWebhook = razorpayWebhook;
 
@@ -77,7 +76,7 @@ exports.sendEstimateAcknowledgmentWhatsApp = sendEstimateAcknowledgmentWhatsApp;
 exports.sendPaymentReminders = sendPaymentReminders;
 exports.resendWhatsAppNotification = resendWhatsAppNotification;
 
-// Export Invoice Triggers — generates + sends invoice on every new order
+// Export Invoice Triggers
 const {
   generateAndSendInvoiceOnOrderCreation,
   resendInvoiceOnStatusChange,
@@ -91,7 +90,7 @@ exports.resendInvoiceOnStatusChange = resendInvoiceOnStatusChange;
 exports.resendInvoiceManually = resendInvoiceManually;
 exports.cleanupOldInvoices = cleanupOldInvoices;
 
-// Export Delivery Routing & Invoice Preference (NEW)
+// Export Delivery Routing & Invoice Preference
 const {
   onOrderFinalizedWithDelivery,
   onInvoicePreferenceSet,
@@ -100,7 +99,7 @@ const {
 exports.onOrderFinalizedWithDelivery = onOrderFinalizedWithDelivery;
 exports.onInvoicePreferenceSet = onInvoicePreferenceSet;
 
-// Export utility functions if needed
+// Export utility functions
 const { resendToSheet } = require("./googleSheets");
 
 /**
@@ -108,7 +107,6 @@ const { resendToSheet } = require("./googleSheets");
  */
 exports.resendToGoogleSheets = require("firebase-functions").https.onCall(
   async (data, context) => {
-    // Verify admin access
     if (!context.auth) {
       throw new require("firebase-functions").https.HttpsError(
         "unauthenticated",
@@ -138,7 +136,6 @@ exports.resendToGoogleSheets = require("firebase-functions").https.onCall(
     }
 
     try {
-      // Fetch document
       const doc = await admin
         .firestore()
         .collection(collection)
@@ -153,11 +150,8 @@ exports.resendToGoogleSheets = require("firebase-functions").https.onCall(
       }
 
       const docData = { ...doc.data(), id: documentId };
-
-      // Send to appropriate sheet
       const result = await resendToSheet(type, docData);
 
-      // Update document with sync status
       const syncField = type === "purchase" ? "purchaseSync" : "inquirySync";
       await doc.ref.update({
         [`googleSheets.${syncField}`]: {

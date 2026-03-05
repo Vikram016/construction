@@ -76,14 +76,9 @@ exports.onWasteSandBookingCreated = functions.firestore
  *
  * Lets an admin manually re-push a booking to Google Sheets from the
  * admin dashboard if the original sync failed.
- *
- * Usage (client):
- *   const fn = httpsCallable(functions, 'resendWasteSandToSheet');
- *   await fn({ bookingId: 'abc123' });
  */
 exports.resendWasteSandToSheet = functions.https.onCall(
   async (data, context) => {
-    // Must be authenticated
     if (!context.auth) {
       throw new functions.https.HttpsError(
         "unauthenticated",
@@ -91,7 +86,6 @@ exports.resendWasteSandToSheet = functions.https.onCall(
       );
     }
 
-    // Must be admin
     const userDoc = await admin
       .firestore()
       .collection("users")
