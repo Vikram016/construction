@@ -105,7 +105,6 @@ exports.retryFailedSiteCleanSyncs = retryFailedSiteCleanSyncs;
 
 // ── Generic Admin Resend ────────────────────────────────────────────────────
 const { resendToSheet } = require("./googleSheets");
-const functions = require("firebase-functions");
 
 exports.resendToGoogleSheets = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
