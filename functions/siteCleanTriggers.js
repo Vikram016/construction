@@ -17,48 +17,62 @@
  * Apps Script file     : GoogleAppsScript_SiteClean.js
  */
 
-const functions = require('firebase-functions');
-const admin     = require('firebase-admin');
-const { sendSiteCleanToSheet } = require('./googleSheets');
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const { sendSiteCleanToSheet } = require("./googleSheets");
 
 /* ── 1. onCreate: new site_clean_bookings doc → Google Sheets ─────────────── */
 
 exports.onSiteCleanBookingCreated = functions.firestore
-  .document('site_clean_bookings/{bookingId}')
+  .document("site_clean_bookings/{bookingId}")
   .onCreate(async (snap, context) => {
     const bookingData = snap.data();
-    const bookingId   = context.params.bookingId;
+    const bookingId = context.params.bookingId;
 
     console.log(`[SiteClean] New booking created: ${bookingId}`, {
-      name:     bookingData.name,
-      phone:    bookingData.phone,
-      area:     bookingData.area,
+      name: bookingData.name,
+      phone: bookingData.phone,
+      area: bookingData.area,
       siteArea: bookingData.quantity,
-      package:  bookingData.package,
+      package: bookingData.package,
     });
 
     try {
-      const dataWithId = { ...bookingData, id: bookingId };
-
+      const dataWithId = {
+        ...bookingData,
+        id: bookingId,
+        timestamp: new Date().toLocaleString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+      };
       const result = await sendSiteCleanToSheet(dataWithId);
 
       await snap.ref.update({
-        'googleSheets.sheetSync': {
-          success:   result.success,
+        "googleSheets.sheetSync": {
+          success: result.success,
           timestamp: admin.firestore.FieldValue.serverTimestamp(),
-          error:     result.error || null,
+          error: result.error || null,
         },
       });
 
-      console.log(`[SiteClean] Booking ${bookingId} synced to Google Sheets:`, result.success);
+      console.log(
+        `[SiteClean] Booking ${bookingId} synced to Google Sheets:`,
+        result.success,
+      );
     } catch (error) {
       console.error(`[SiteClean] Failed to sync booking ${bookingId}:`, error);
 
       await snap.ref.update({
-        'googleSheets.sheetSync': {
-          success:   false,
+        "googleSheets.sheetSync": {
+          success: false,
           timestamp: admin.firestore.FieldValue.serverTimestamp(),
-          error:     error.message,
+          error: error.message,
         },
       });
     }
@@ -68,84 +82,92 @@ exports.onSiteCleanBookingCreated = functions.firestore
 
 /* ── 2. HTTPS Callable: admin manual resend ───────────────────────────────── */
 
-exports.resendSiteCleanToSheet = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError(
-      'unauthenticated',
-      'User must be authenticated to resend bookings'
-    );
-  }
-
-  const userDoc = await admin
-    .firestore()
-    .collection('users')
-    .doc(context.auth.uid)
-    .get();
-
-  if (!userDoc.exists || userDoc.data().role !== 'admin') {
-    throw new functions.https.HttpsError(
-      'permission-denied',
-      'Only admins can resend bookings to Google Sheets'
-    );
-  }
-
-  const { bookingId } = data;
-  if (!bookingId) {
-    throw new functions.https.HttpsError('invalid-argument', 'bookingId is required');
-  }
-
-  try {
-    const doc = await admin
-      .firestore()
-      .collection('site_clean_bookings')
-      .doc(bookingId)
-      .get();
-
-    if (!doc.exists) {
-      throw new functions.https.HttpsError('not-found', `Site Clean booking ${bookingId} not found`);
+exports.resendSiteCleanToSheet = functions.https.onCall(
+  async (data, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "User must be authenticated to resend bookings",
+      );
     }
 
-    const bookingData = { ...doc.data(), id: bookingId };
-    const result      = await sendSiteCleanToSheet(bookingData);
+    const userDoc = await admin
+      .firestore()
+      .collection("users")
+      .doc(context.auth.uid)
+      .get();
 
-    await doc.ref.update({
-      'googleSheets.sheetSync': {
-        success:      result.success,
-        timestamp:    admin.firestore.FieldValue.serverTimestamp(),
-        error:        result.error || null,
-        manualResend: true,
-        resendBy:     context.auth.uid,
-      },
-    });
+    if (!userDoc.exists || userDoc.data().role !== "admin") {
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "Only admins can resend bookings to Google Sheets",
+      );
+    }
 
-    return {
-      success:   result.success,
-      bookingId,
-      message: result.success
-        ? 'Booking successfully resent to Google Sheets'
-        : `Failed to resend: ${result.error}`,
-    };
-  } catch (error) {
-    console.error('[SiteClean] resendSiteCleanToSheet error:', error);
-    throw new functions.https.HttpsError('internal', error.message);
-  }
-});
+    const { bookingId } = data;
+    if (!bookingId) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "bookingId is required",
+      );
+    }
+
+    try {
+      const doc = await admin
+        .firestore()
+        .collection("site_clean_bookings")
+        .doc(bookingId)
+        .get();
+
+      if (!doc.exists) {
+        throw new functions.https.HttpsError(
+          "not-found",
+          `Site Clean booking ${bookingId} not found`,
+        );
+      }
+
+      const bookingData = { ...doc.data(), id: bookingId };
+      const result = await sendSiteCleanToSheet(bookingData);
+
+      await doc.ref.update({
+        "googleSheets.sheetSync": {
+          success: result.success,
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          error: result.error || null,
+          manualResend: true,
+          resendBy: context.auth.uid,
+        },
+      });
+
+      return {
+        success: result.success,
+        bookingId,
+        message: result.success
+          ? "Booking successfully resent to Google Sheets"
+          : `Failed to resend: ${result.error}`,
+      };
+    } catch (error) {
+      console.error("[SiteClean] resendSiteCleanToSheet error:", error);
+      throw new functions.https.HttpsError("internal", error.message);
+    }
+  },
+);
 
 /* ── 3. Scheduled: retry failed syncs every 6 hours ─────────────────────── */
 
 exports.retryFailedSiteCleanSyncs = functions.pubsub
-  .schedule('every 6 hours')
+  .schedule("every 6 hours")
   .onRun(async () => {
-    console.log('[SiteClean] Starting retry of failed sheet syncs…');
+    console.log("[SiteClean] Starting retry of failed sheet syncs…");
 
     try {
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
       const failedSnap = await admin
         .firestore()
-        .collection('site_clean_bookings')
-        .where('googleSheets.sheetSync.success', '==', false)
-        .where('googleSheets.sheetSync.timestamp', '>=', oneDayAgo)
+        .collection("site_clean_bookings")
+        .where("googleSheets.sheetSync.success", "==", false)
+        .where("googleSheets.sheetSync.timestamp", ">=", oneDayAgo)
         .limit(25)
         .get();
 
@@ -154,15 +176,15 @@ exports.retryFailedSiteCleanSyncs = functions.pubsub
       const retryResults = await Promise.all(
         failedSnap.docs.map(async (doc) => {
           try {
-            const data   = { ...doc.data(), id: doc.id };
+            const data = { ...doc.data(), id: doc.id };
             const result = await sendSiteCleanToSheet(data);
 
             await doc.ref.update({
-              'googleSheets.sheetSync': {
-                success:   result.success,
+              "googleSheets.sheetSync": {
+                success: result.success,
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                error:     result.error || null,
-                retried:   true,
+                error: result.error || null,
+                retried: true,
               },
             });
 
@@ -171,15 +193,17 @@ exports.retryFailedSiteCleanSyncs = functions.pubsub
             console.error(`[SiteClean] Retry failed for ${doc.id}:`, err);
             return { id: doc.id, success: false, error: err.message };
           }
-        })
+        }),
       );
 
-      const successCount = retryResults.filter(r => r.success).length;
-      console.log(`[SiteClean] Retry complete: ${successCount}/${retryResults.length} succeeded`);
+      const successCount = retryResults.filter((r) => r.success).length;
+      console.log(
+        `[SiteClean] Retry complete: ${successCount}/${retryResults.length} succeeded`,
+      );
 
       return { total: retryResults.length, successful: successCount };
     } catch (error) {
-      console.error('[SiteClean] retryFailedSiteCleanSyncs error:', error);
+      console.error("[SiteClean] retryFailedSiteCleanSyncs error:", error);
       return { error: error.message };
     }
   });

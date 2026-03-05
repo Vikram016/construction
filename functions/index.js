@@ -1,16 +1,15 @@
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 
 // Initialize Firebase Admin
 admin.initializeApp();
 
-
 // ── Google Reviews (fetches from Places API server-side, 24hr cache) ──────────
-const { getGoogleReviews } = require('./googleReviews');
+const { getGoogleReviews } = require("./googleReviews");
 exports.getGoogleReviews = getGoogleReviews;
 // ── Razorpay Payment Webhook ──────────────────────────────────────────────────
 // Receives payment.captured / payment.failed events from Razorpay,
 // updates Firestore order → triggers WhatsApp notification + Google Sheets sync
-const { razorpayWebhook } = require('./razorpayWebhook');
+const { razorpayWebhook } = require("./razorpayWebhook");
 exports.razorpayWebhook = razorpayWebhook;
 
 // Export Waste Sand Booking Triggers (Google Sheets)
@@ -18,30 +17,30 @@ const {
   onWasteSandBookingCreated,
   resendWasteSandToSheet,
   retryFailedWasteSandSyncs,
-} = require('./wasteSandTriggers');
+} = require("./wasteSandTriggers");
 
-exports.onWasteSandBookingCreated  = onWasteSandBookingCreated;
-exports.resendWasteSandToSheet     = resendWasteSandToSheet;
-exports.retryFailedWasteSandSyncs  = retryFailedWasteSandSyncs;
+exports.onWasteSandBookingCreated = onWasteSandBookingCreated;
+exports.resendWasteSandToSheet = resendWasteSandToSheet;
+exports.retryFailedWasteSandSyncs = retryFailedWasteSandSyncs;
 
 // Export Debris Sand Booking Triggers (Google Sheets)
 const {
   onDebrisSandBookingCreated,
   resendDebrisSandToSheet,
   retryFailedDebrisSandSyncs,
-} = require('./debrisSandTriggers');
+} = require("./debrisSandTriggers");
 
-exports.onDebrisSandBookingCreated  = onDebrisSandBookingCreated;
-exports.resendDebrisSandToSheet     = resendDebrisSandToSheet;
-exports.retryFailedDebrisSandSyncs  = retryFailedDebrisSandSyncs;
+exports.onDebrisSandBookingCreated = onDebrisSandBookingCreated;
+exports.resendDebrisSandToSheet = resendDebrisSandToSheet;
+exports.retryFailedDebrisSandSyncs = retryFailedDebrisSandSyncs;
 
 // Export Order Triggers (Google Sheets)
 const {
   onOrderCreated,
   onOrderPaymentConfirmed,
   resendOrderToSheet,
-  retryFailedOrderSyncs
-} = require('./orderTriggers');
+  retryFailedOrderSyncs,
+} = require("./orderTriggers");
 
 exports.onOrderCreated = onOrderCreated;
 exports.onOrderPaymentConfirmed = onOrderPaymentConfirmed;
@@ -53,8 +52,8 @@ const {
   onEstimateCreated,
   onInquiryCreated,
   resendInquiryToSheet,
-  retryFailedInquirySyncs
-} = require('./inquiryTriggers');
+  retryFailedInquirySyncs,
+} = require("./inquiryTriggers");
 
 exports.onEstimateCreated = onEstimateCreated;
 exports.onInquiryCreated = onInquiryCreated;
@@ -68,8 +67,8 @@ const {
   sendInquiryAcknowledgmentWhatsApp,
   sendEstimateAcknowledgmentWhatsApp,
   sendPaymentReminders,
-  resendWhatsAppNotification
-} = require('./whatsappNotifications');
+  resendWhatsAppNotification,
+} = require("./whatsappNotifications");
 
 exports.sendOrderConfirmationWhatsApp = sendOrderConfirmationWhatsApp;
 exports.sendDeliveryStatusWhatsApp = sendDeliveryStatusWhatsApp;
@@ -84,106 +83,116 @@ const {
   resendInvoiceOnStatusChange,
   resendInvoiceManually,
   cleanupOldInvoices,
-} = require('./invoiceTriggers');
+} = require("./invoiceTriggers");
 
-exports.generateAndSendInvoiceOnOrderCreation = generateAndSendInvoiceOnOrderCreation;
-exports.resendInvoiceOnStatusChange            = resendInvoiceOnStatusChange;
-exports.resendInvoiceManually                  = resendInvoiceManually;
-exports.cleanupOldInvoices                     = cleanupOldInvoices;
+exports.generateAndSendInvoiceOnOrderCreation =
+  generateAndSendInvoiceOnOrderCreation;
+exports.resendInvoiceOnStatusChange = resendInvoiceOnStatusChange;
+exports.resendInvoiceManually = resendInvoiceManually;
+exports.cleanupOldInvoices = cleanupOldInvoices;
 
 // Export Delivery Routing & Invoice Preference (NEW)
 const {
   onOrderFinalizedWithDelivery,
-  onInvoicePreferenceSet
-} = require('./triggers/orderFinalizedWithDelivery');
+  onInvoicePreferenceSet,
+} = require("./triggers/orderFinalizedWithDelivery");
 
 exports.onOrderFinalizedWithDelivery = onOrderFinalizedWithDelivery;
 exports.onInvoicePreferenceSet = onInvoicePreferenceSet;
 
 // Export utility functions if needed
-const { resendToSheet } = require('./googleSheets');
+const { resendToSheet } = require("./googleSheets");
 
 /**
  * Generic resend function for admin dashboard
  */
-exports.resendToGoogleSheets = require('firebase-functions').https.onCall(async (data, context) => {
-  // Verify admin access
-  if (!context.auth) {
-    throw new require('firebase-functions').https.HttpsError(
-      'unauthenticated',
-      'User must be authenticated'
-    );
-  }
-
-  const userDoc = await admin.firestore().collection('users').doc(context.auth.uid).get();
-  if (!userDoc.exists || userDoc.data().role !== 'admin') {
-    throw new require('firebase-functions').https.HttpsError(
-      'permission-denied',
-      'User must be an admin'
-    );
-  }
-
-  const { type, collection, documentId } = data;
-
-  if (!type || !collection || !documentId) {
-    throw new require('firebase-functions').https.HttpsError(
-      'invalid-argument',
-      'type, collection, and documentId are required'
-    );
-  }
-
-  try {
-    // Fetch document
-    const doc = await admin.firestore().collection(collection).doc(documentId).get();
-
-    if (!doc.exists) {
-      throw new require('firebase-functions').https.HttpsError(
-        'not-found',
-        `Document ${documentId} not found in ${collection}`
+exports.resendToGoogleSheets = require("firebase-functions").https.onCall(
+  async (data, context) => {
+    // Verify admin access
+    if (!context.auth) {
+      throw new require("firebase-functions").https.HttpsError(
+        "unauthenticated",
+        "User must be authenticated",
       );
     }
 
-    const docData = { ...doc.data(), id: documentId };
+    const userDoc = await admin
+      .firestore()
+      .collection("users")
+      .doc(context.auth.uid)
+      .get();
+    if (!userDoc.exists || userDoc.data().role !== "admin") {
+      throw new require("firebase-functions").https.HttpsError(
+        "permission-denied",
+        "User must be an admin",
+      );
+    }
 
-    // Send to appropriate sheet
-    const result = await resendToSheet(type, docData);
+    const { type, collection, documentId } = data;
 
-    // Update document with sync status
-    const syncField = type === 'purchase' ? 'purchaseSync' : 'inquirySync';
-    await doc.ref.update({
-      [`googleSheets.${syncField}`]: {
-        success: result.success,
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        error: result.error || null,
-        manualResend: true,
-        resendBy: context.auth.uid
+    if (!type || !collection || !documentId) {
+      throw new require("firebase-functions").https.HttpsError(
+        "invalid-argument",
+        "type, collection, and documentId are required",
+      );
+    }
+
+    try {
+      // Fetch document
+      const doc = await admin
+        .firestore()
+        .collection(collection)
+        .doc(documentId)
+        .get();
+
+      if (!doc.exists) {
+        throw new require("firebase-functions").https.HttpsError(
+          "not-found",
+          `Document ${documentId} not found in ${collection}`,
+        );
       }
-    });
 
-    return {
-      success: result.success,
-      documentId: documentId,
-      message: result.success 
-        ? 'Successfully sent to Google Sheets' 
-        : `Failed: ${result.error}`
-    };
+      const docData = { ...doc.data(), id: documentId };
 
-  } catch (error) {
-    console.error('Error in resendToGoogleSheets:', error);
-    throw new require('firebase-functions').https.HttpsError(
-      'internal',
-      error.message
-    );
-  }
-});
+      // Send to appropriate sheet
+      const result = await resendToSheet(type, docData);
+
+      // Update document with sync status
+      const syncField = type === "purchase" ? "purchaseSync" : "inquirySync";
+      await doc.ref.update({
+        [`googleSheets.${syncField}`]: {
+          success: result.success,
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          error: result.error || null,
+          manualResend: true,
+          resendBy: context.auth.uid,
+        },
+      });
+
+      return {
+        success: result.success,
+        documentId: documentId,
+        message: result.success
+          ? "Successfully sent to Google Sheets"
+          : `Failed: ${result.error}`,
+      };
+    } catch (error) {
+      console.error("Error in resendToGoogleSheets:", error);
+      throw new require("firebase-functions").https.HttpsError(
+        "internal",
+        error.message,
+      );
+    }
+  },
+);
 
 // Export Site Clean Booking Triggers (Google Sheets)
 const {
   onSiteCleanBookingCreated,
   resendSiteCleanToSheet,
   retryFailedSiteCleanSyncs,
-} = require('./siteCleanTriggers');
+} = require("./siteCleanTriggers");
 
-exports.onSiteCleanBookingCreated  = onSiteCleanBookingCreated;
-exports.resendSiteCleanToSheet     = resendSiteCleanToSheet;
-exports.retryFailedSiteCleanSyncs  = retryFailedSiteCleanSyncs;
+exports.onSiteCleanBookingCreated = onSiteCleanBookingCreated;
+exports.resendSiteCleanToSheet = resendSiteCleanToSheet;
+exports.retryFailedSiteCleanSyncs = retryFailedSiteCleanSyncs;
