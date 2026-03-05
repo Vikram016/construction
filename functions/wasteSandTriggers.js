@@ -2,16 +2,6 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const { sendWasteSandToSheet } = require("./googleSheets");
 
-/**
- * Trigger: onWasteSandBookingCreated
- *
- * Fires whenever a document is added to `waste_sand_bookings`.
- * Sends the booking data to the "Waste Sand Bookings" tab in Google Sheets
- * via the configured webhook URL, then writes sync status back to Firestore.
- *
- * Firebase config key required:
- *   firebase functions:config:set sheets.waste_sand_webhook="<your Apps Script URL>"
- */
 exports.onWasteSandBookingCreated = functions.firestore
   .document("waste_sand_bookings/{bookingId}")
   .onCreate(async (snap, context) => {
@@ -40,10 +30,8 @@ exports.onWasteSandBookingCreated = functions.firestore
         }),
       };
 
-      // Send to Google Sheets
       const result = await sendWasteSandToSheet(dataWithId);
 
-      // Write sync status back to the booking document
       await snap.ref.update({
         "googleSheets.sheetSync": {
           success: result.success,
@@ -58,7 +46,6 @@ exports.onWasteSandBookingCreated = functions.firestore
       );
     } catch (error) {
       console.error(`[WasteSand] Failed to sync booking ${bookingId}:`, error);
-
       await snap.ref.update({
         "googleSheets.sheetSync": {
           success: false,
@@ -71,12 +58,6 @@ exports.onWasteSandBookingCreated = functions.firestore
     return null;
   });
 
-/**
- * HTTPS Callable: resendWasteSandToSheet
- *
- * Lets an admin manually re-push a booking to Google Sheets from the
- * admin dashboard if the original sync failed.
- */
 exports.resendWasteSandToSheet = functions.https.onCall(
   async (data, context) => {
     if (!context.auth) {
@@ -91,7 +72,6 @@ exports.resendWasteSandToSheet = functions.https.onCall(
       .collection("users")
       .doc(context.auth.uid)
       .get();
-
     if (!userDoc.exists || userDoc.data().role !== "admin") {
       throw new functions.https.HttpsError(
         "permission-denied",
@@ -113,7 +93,6 @@ exports.resendWasteSandToSheet = functions.https.onCall(
         .collection("waste_sand_bookings")
         .doc(bookingId)
         .get();
-
       if (!doc.exists) {
         throw new functions.https.HttpsError(
           "not-found",
@@ -148,16 +127,10 @@ exports.resendWasteSandToSheet = functions.https.onCall(
   },
 );
 
-/**
- * Scheduled: retryFailedWasteSandSyncs
- *
- * Runs every 6 hours and retries any bookings whose sheet sync failed
- * within the last 24 hours.
- */
 exports.retryFailedWasteSandSyncs = functions.pubsub
   .schedule("every 6 hours")
   .onRun(async () => {
-    console.log("[WasteSand] Starting retry of failed sheet syncs…");
+    console.log("[WasteSand] Starting retry of failed sheet syncs...");
 
     try {
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -177,7 +150,6 @@ exports.retryFailedWasteSandSyncs = functions.pubsub
           try {
             const data = { ...doc.data(), id: doc.id };
             const result = await sendWasteSandToSheet(data);
-
             await doc.ref.update({
               "googleSheets.sheetSync": {
                 success: result.success,
@@ -186,7 +158,6 @@ exports.retryFailedWasteSandSyncs = functions.pubsub
                 retried: true,
               },
             });
-
             return { id: doc.id, success: result.success };
           } catch (err) {
             console.error(`[WasteSand] Retry failed for ${doc.id}:`, err);
@@ -199,7 +170,6 @@ exports.retryFailedWasteSandSyncs = functions.pubsub
       console.log(
         `[WasteSand] Retry complete: ${successCount}/${retryResults.length} succeeded`,
       );
-
       return { total: retryResults.length, successful: successCount };
     } catch (error) {
       console.error("[WasteSand] retryFailedWasteSandSyncs error:", error);
