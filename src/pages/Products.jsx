@@ -475,7 +475,7 @@ const ProductRow = ({ item, unit, category }) => {
   return (
     <div className="flex gap-4 py-5 border-b border-gray-100 last:border-0 items-start">
       {/* ── Image — larger, square ── */}
-      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-100 shadow-sm">
+      <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-100 shadow-sm">
         {item.img ? (
           <img
             src={item.img}
