@@ -1,5 +1,5 @@
 /**
- * Products.jsx — BuildMart Supplier Page
+ * Products.jsx — AnjaneyaDealers Supplier Page
  * Full price list + quantity selectors + add to cart + tractor wizard
  */
 
@@ -88,7 +88,7 @@ const CATEGORIES = [
     img: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop",
   },
   {
-    id: "weightless",
+    id: "Weightless",
     emoji: "⬜",
     title: "Weightless Blocks",
     img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop",
@@ -240,7 +240,7 @@ const PRICE_SECTIONS = [
     ],
   },
   {
-    id: "weightless",
+    id: "Weightless",
     title: "Weightless / AAC Blocks",
     emoji: "⬜",
     unit: "per block",
@@ -996,7 +996,7 @@ const Products = () => {
       <Helmet>
         <title>
           Building Materials Supplier Bangalore — M-Sand, Bricks, Blocks, Cement
-          | BuildMart
+          | AnjaneyaDealers
         </title>
         <meta
           name="description"
@@ -1309,7 +1309,7 @@ const Products = () => {
               >
                 <div className="text-5xl mb-3">🗺️</div>
                 <p className="font-bold text-gray-700 mb-1">
-                  BuildMart — Peenya, Bangalore
+                  AnjaneyaDealers — Peenya, Bangalore
                 </p>
                 <p className="text-gray-400 text-sm mb-4">
                   12 Industrial Layout, Peenya Industrial Area

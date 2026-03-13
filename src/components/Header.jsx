@@ -216,17 +216,17 @@ const Header = () => {
           {/* Logo */}
           <Link
             to="/"
-            aria-label="BuildMart — Home"
+            aria-label="AnjaneyaDealers — Home"
             className="flex items-center gap-2.5 shrink-0"
           >
             <div className="w-9 h-9 bg-orange-500 rounded-lg flex items-center justify-center shadow-sm">
               <span className="text-white font-black text-base leading-none select-none">
-                BM
+                AD
               </span>
             </div>
             <div className="hidden sm:block leading-none">
               <p className="font-display font-black text-lg text-neutral-900 leading-tight">
-                BuildMart
+                AnjaneyaDealers
               </p>
               <p className="text-[10px] text-neutral-400 font-medium tracking-wide">
                 Premium Materials · Bangalore

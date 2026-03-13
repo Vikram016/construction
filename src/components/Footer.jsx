@@ -107,7 +107,7 @@ const Footer = () => {
           </div>
           <div className="flex gap-3 shrink-0">
             <a
-              href={`https://wa.me/${whatsapp}?text=Hi! I'd like to book a BuildMart service in Bangalore.`}
+              href={`https://wa.me/${whatsapp}?text=Hi! I'd like to book a AnjaneyaDealers service in Bangalore.`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-neutral-900 text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-neutral-800 transition-colors"
@@ -131,11 +131,11 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-2.5 mb-5">
               <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shrink-0">
-                <span className="text-white font-black text-base">BM</span>
+                <span className="text-white font-black text-base">AD</span>
               </div>
               <div>
                 <p className="font-black text-white text-xl leading-tight">
-                  BuildMart
+                  AnjaneyaDealers
                 </p>
                 <p className="text-neutral-500 text-xs">
                   Premium Construction Materials
@@ -260,7 +260,7 @@ const Footer = () => {
       <div className="border-t border-neutral-800 py-5">
         <div className="container-custom flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-neutral-600">
           <p>
-            © {year} BuildMart · {address.city}, {address.state},{" "}
+            © {year} AnjaneyaDealers · {address.city}, {address.state},{" "}
             {address.country}. All rights reserved.
           </p>
           <p>

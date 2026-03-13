@@ -17,9 +17,9 @@ export const CONTACT_CONFIG = {
 
   // ── Email ─────────────────────────────────────────────────────────────────
   email: {
-    sales: "sales@buildmart.in",
-    support: "support@buildmart.in",
-    info: "info@buildmart.in",
+    sales: "sales@anjaneyadealers.com",
+    support: "support@anjaneyadealers.com",
+    info: "info@anjaneyadealers.com",
   },
 
   // ── Address — Bangalore (matches seoConfig GEO) ───────────────────────────
@@ -35,7 +35,7 @@ export const CONTACT_CONFIG = {
   // ── Hours ─────────────────────────────────────────────────────────────────
   hours: {
     weekdays: "Mon–Sat: 8 AM – 7 PM",
-    weekend: "Sunday: Closed",
+    weekend: "Sunday: 8 AM – 1 PM",
     emergency: "24/7 WhatsApp Support",
   },
 
