@@ -650,14 +650,14 @@ const Home = () => {
                 Bricks, Blocks, Cement
               </h3>
               <p className="text-gray-400 text-xs leading-relaxed">
-                BuildMart is a trusted building materials supplier in {GEO.city}
-                , {GEO.state}. We supply M-Sand, River Sand, P-Sand, Red Bricks,
-                Concrete Blocks, Weightless AAC Blocks, Tractor Loads and Cement
-                (UltraTech, Birla, Ramco, Karthika, ACC) to construction sites
-                across Angondhalli, Whitefield, Hoskote, KR Puram, Marathahalli
-                and all of {GEO.city}. Fast delivery, accurate measurement,
-                competitive market prices. Call or WhatsApp us to place your
-                order today.
+                AnjaneyaDealers is a trusted building materials supplier in{" "}
+                {GEO.city}, {GEO.state}. We supply M-Sand, River Sand, P-Sand,
+                Red Bricks, Concrete Blocks, Weightless AAC Blocks, Tractor
+                Loads and Cement (UltraTech, Birla, Ramco, Karthika, ACC) to
+                construction sites across Angondhalli, Whitefield, Hoskote, KR
+                Puram, Marathahalli and all of {GEO.city}. Fast delivery,
+                accurate measurement, competitive market prices. Call or
+                WhatsApp us to place your order today.
               </p>
             </div>
           </div>
@@ -669,7 +669,7 @@ const Home = () => {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                  Why Choose BuildMart?
+                  Why Choose AnjaneyaDealers?
                 </h2>
                 <div className="space-y-6">
                   {[

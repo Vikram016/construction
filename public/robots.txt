@@ -1,5 +1,5 @@
-# BuildMart — robots.txt
-# https://buildmart.in
+# AnjaneyaDealers — robots.txt
+# https://anjaneyadealers.com
 
 User-agent: *
 Allow: /
@@ -28,7 +28,7 @@ Allow: /products/
 Allow: /blog/
 
 # Sitemap
-Sitemap: https://buildmart.in/sitemap.xml
+Sitemap: https://anjaneyadealers.com/sitemap.xml
 
 # Crawl-delay hint for lower-priority bots
 User-agent: AhrefsBot
