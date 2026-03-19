@@ -1,11 +1,11 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════════
  * GoogleAppsScript_SiteClean.js
- * BuildMart — Site Cleaning Bookings → Google Sheets
+ * AnjaneyaDealers — Site Cleaning Bookings → Google Sheets
  * ═══════════════════════════════════════════════════════════════════════════════
  *
  * WHAT THIS DOES:
- *   Receives HTTP POST from BuildMart Firebase Cloud Function whenever a new
+ *   Receives HTTP POST from AnjaneyaDealers SFirebase Cloud Function whenever a new
  *   site_clean_bookings document is created in Firestore, then appends a row
  *   to the "Site Clean Bookings" tab in this Google Sheet.
  *
@@ -19,7 +19,7 @@
  * ── SETUP INSTRUCTIONS ────────────────────────────────────────────────────────
  *
  *  1. Open https://script.google.com → Create new project
- *     Name it: "BuildMart Site Clean Webhook"
+ *     Name it: "AnjaneyaDealers Site Clean Webhook"
  *
  *  2. Paste this entire file into the editor (replace the empty function)
  *
@@ -56,39 +56,39 @@
  */
 
 /* ── Configuration ───────────────────────────────────────────────────────────── */
-const SHEET_NAME = 'Site Clean Bookings';
+const SHEET_NAME = "Site Clean Bookings";
 
 // Only needed if running as a standalone script (not bound to a sheet)
 // const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE';
 
 const HEADERS = [
-  'Booking ID',
-  'Date',
-  'Name',
-  'Phone',
-  'Location',
-  'Site Area (sq ft)',
-  'Package',
-  'Total Amount',
-  'Status',
-  'Preferred Date',
-  'Notes',
-  'Source',
-  'Assigned To',
-  'Synced At',
+  "Booking ID",
+  "Date",
+  "Name",
+  "Phone",
+  "Location",
+  "Site Area (sq ft)",
+  "Package",
+  "Total Amount",
+  "Status",
+  "Preferred Date",
+  "Notes",
+  "Source",
+  "Assigned To",
+  "Synced At",
 ];
 
 // Column header colours — blue theme for Site Clean (matches app UI)
-const HEADER_BG    = '#1e3a8a';   // dark blue
-const HEADER_FG    = '#ffffff';   // white text
-const ALT_ROW_BG   = '#eff6ff';   // very light blue for alternating rows
+const HEADER_BG = "#1e3a8a"; // dark blue
+const HEADER_FG = "#ffffff"; // white text
+const ALT_ROW_BG = "#eff6ff"; // very light blue for alternating rows
 const STATUS_COLORS = {
-  'pending':          '#fef3c7',   // amber
-  'confirmed':        '#d1fae5',   // green
-  'in_progress':      '#dbeafe',   // blue
-  'completed':        '#d1fae5',   // green
-  'cancelled':        '#fee2e2',   // red
-  'pending_payment':  '#fef3c7',   // amber
+  pending: "#fef3c7", // amber
+  confirmed: "#d1fae5", // green
+  in_progress: "#dbeafe", // blue
+  completed: "#d1fae5", // green
+  cancelled: "#fee2e2", // red
+  pending_payment: "#fef3c7", // amber
 };
 
 /* ── Main webhook handler ────────────────────────────────────────────────────── */
@@ -96,15 +96,15 @@ function doPost(e) {
   try {
     // Parse request body
     if (!e || !e.postData || !e.postData.contents) {
-      return jsonResponse({ success: false, error: 'No POST body received' });
+      return jsonResponse({ success: false, error: "No POST body received" });
     }
 
     const payload = JSON.parse(e.postData.contents);
 
-    if (payload.type !== 'site_clean_booking') {
+    if (payload.type !== "site_clean_booking") {
       return jsonResponse({
         success: false,
-        error:   `Unknown booking type: ${payload.type}`,
+        error: `Unknown booking type: ${payload.type}`,
       });
     }
 
@@ -114,26 +114,30 @@ function doPost(e) {
     // Build the row
     const now = nowIST();
     const preferredDate = data.preferredDate
-      ? new Date(data.preferredDate).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })
-      : 'Not specified';
+      ? new Date(data.preferredDate).toLocaleDateString("en-IN", {
+          timeZone: "Asia/Kolkata",
+        })
+      : "Not specified";
 
     const newRow = [
-      data.bookingId    || `SCB-${Date.now()}`,   // A: Booking ID
+      data.bookingId || `SCB-${Date.now()}`, // A: Booking ID
       data.date
-        ? new Date(data.date).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
-        : now,                                      // B: Date
-      data.name         || 'Unknown',              // C: Name
-      data.phone        || 'N/A',                  // D: Phone
-      data.area         || 'N/A',                  // E: Location
-      data.siteArea     || data.quantity || 0,      // F: Site Area (sq ft)
-      data.package      || 'To be quoted',         // G: Package
-      data.totalAmount  || '₹0',                   // H: Total Amount
-      data.status       || 'pending',              // I: Status
-      preferredDate,                               // J: Preferred Date
-      data.notes        || '',                     // K: Notes
-      data.source       || 'website',              // L: Source
-      data.assignedTo   || '',                     // M: Assigned To
-      now,                                         // N: Synced At
+        ? new Date(data.date).toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+          })
+        : now, // B: Date
+      data.name || "Unknown", // C: Name
+      data.phone || "N/A", // D: Phone
+      data.area || "N/A", // E: Location
+      data.siteArea || data.quantity || 0, // F: Site Area (sq ft)
+      data.package || "To be quoted", // G: Package
+      data.totalAmount || "₹0", // H: Total Amount
+      data.status || "pending", // I: Status
+      preferredDate, // J: Preferred Date
+      data.notes || "", // K: Notes
+      data.source || "website", // L: Source
+      data.assignedTo || "", // M: Assigned To
+      now, // N: Synced At
     ];
 
     const lastRow = sheet.getLastRow();
@@ -146,16 +150,17 @@ function doPost(e) {
     // Auto-resize columns to content
     sheet.autoResizeColumns(1, HEADERS.length);
 
-    console.log(`[SiteClean] Booking ${data.bookingId} appended at row ${newRowIndex}`);
+    console.log(
+      `[SiteClean] Booking ${data.bookingId} appended at row ${newRowIndex}`,
+    );
 
     return jsonResponse({
       success: true,
       message: `Site Clean booking ${data.bookingId} logged at row ${newRowIndex}`,
-      row:     newRowIndex,
+      row: newRowIndex,
     });
-
   } catch (err) {
-    console.error('[SiteClean] doPost error:', err.toString());
+    console.error("[SiteClean] doPost error:", err.toString());
     return jsonResponse({ success: false, error: err.toString() });
   }
 }
@@ -164,11 +169,11 @@ function doPost(e) {
 function doGet(e) {
   const sheet = getOrCreateSheet();
   return jsonResponse({
-    status:       'ok',
-    service:      'BuildMart Site Clean Webhook',
-    sheet:        SHEET_NAME,
-    rowCount:     sheet.getLastRow() - 1,  // exclude header
-    timestamp:    nowIST(),
+    status: "ok",
+    service: "AnjaneyaDealers Site Clean Webhook",
+    sheet: SHEET_NAME,
+    rowCount: sheet.getLastRow() - 1, // exclude header
+    timestamp: nowIST(),
   });
 }
 
@@ -178,9 +183,10 @@ function doGet(e) {
  * Get "Site Clean Bookings" tab, creating it with headers if it doesn't exist.
  */
 function getOrCreateSheet() {
-  const ss = (typeof SPREADSHEET_ID !== 'undefined' && SPREADSHEET_ID)
-    ? SpreadsheetApp.openById(SPREADSHEET_ID)
-    : SpreadsheetApp.getActiveSpreadsheet();
+  const ss =
+    typeof SPREADSHEET_ID !== "undefined" && SPREADSHEET_ID
+      ? SpreadsheetApp.openById(SPREADSHEET_ID)
+      : SpreadsheetApp.getActiveSpreadsheet();
 
   let sheet = ss.getSheetByName(SHEET_NAME);
 
@@ -204,13 +210,15 @@ function setupHeaders(sheet) {
   headerRange.setValues([HEADERS]);
   headerRange.setBackground(HEADER_BG);
   headerRange.setFontColor(HEADER_FG);
-  headerRange.setFontWeight('bold');
+  headerRange.setFontWeight("bold");
   headerRange.setFontSize(10);
-  headerRange.setHorizontalAlignment('center');
+  headerRange.setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
 
   // Set sensible column widths
-  const widths = [140, 160, 140, 120, 160, 120, 140, 110, 110, 120, 200, 90, 130, 160];
+  const widths = [
+    140, 160, 140, 120, 160, 120, 140, 110, 110, 120, 200, 90, 130, 160,
+  ];
   widths.forEach((w, i) => sheet.setColumnWidth(i + 1, w));
 }
 
@@ -221,36 +229,36 @@ function styleNewRow(sheet, rowIndex, status) {
   const range = sheet.getRange(rowIndex, 1, 1, HEADERS.length);
 
   // Alternating row background
-  const bg = (rowIndex % 2 === 0) ? ALT_ROW_BG : '#ffffff';
+  const bg = rowIndex % 2 === 0 ? ALT_ROW_BG : "#ffffff";
   range.setBackground(bg);
   range.setFontSize(10);
-  range.setVerticalAlignment('middle');
+  range.setVerticalAlignment("middle");
 
   // Colour the Status cell (column I = index 9)
-  const statusBg = STATUS_COLORS[status] || '#f9fafb';
-  sheet.getRange(rowIndex, 9).setBackground(statusBg).setFontWeight('bold');
+  const statusBg = STATUS_COLORS[status] || "#f9fafb";
+  sheet.getRange(rowIndex, 9).setBackground(statusBg).setFontWeight("bold");
 
   // Bold the Name cell (column C = index 3)
-  sheet.getRange(rowIndex, 3).setFontWeight('bold');
+  sheet.getRange(rowIndex, 3).setFontWeight("bold");
 
   // Format Site Area cell as number (column F = index 6)
-  sheet.getRange(rowIndex, 6).setNumberFormat('#,##0');
+  sheet.getRange(rowIndex, 6).setNumberFormat("#,##0");
 }
 
 /**
  * Return current IST time as a formatted string.
  */
 function nowIST() {
-  return new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+  return new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 }
 
 /**
  * Return a JSON ContentService response.
  */
 function jsonResponse(obj) {
-  return ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(
+    ContentService.MimeType.JSON,
+  );
 }
 
 /* ── Manual test from Apps Script editor ────────────────────────────────────── */
@@ -263,28 +271,28 @@ function testDoPost() {
   const fakeEvent = {
     postData: {
       contents: JSON.stringify({
-        type: 'site_clean_booking',
+        type: "site_clean_booking",
         data: {
-          bookingId:     'SCB-TEST-001',
-          date:          new Date().toISOString(),
-          name:          'Suresh Patil',
-          phone:         '9876543210',
-          area:          'Whitefield, Bangalore',
-          siteArea:      1200,
-          package:       'Standard Clean',
-          totalAmount:   '₹6,999',
-          status:        'pending',
-          preferredDate: '2026-03-15',
-          notes:         'Ground floor, new construction site. Gate access by 9am.',
-          source:        'website',
-          assignedTo:    '',
+          bookingId: "SCB-TEST-001",
+          date: new Date().toISOString(),
+          name: "Suresh Patil",
+          phone: "9876543210",
+          area: "Whitefield, Bangalore",
+          siteArea: 1200,
+          package: "Standard Clean",
+          totalAmount: "₹6,999",
+          status: "pending",
+          preferredDate: "2026-03-15",
+          notes: "Ground floor, new construction site. Gate access by 9am.",
+          source: "website",
+          assignedTo: "",
         },
       }),
     },
   };
 
   const result = doPost(fakeEvent);
-  Logger.log('Test result: ' + result.getContent());
+  Logger.log("Test result: " + result.getContent());
 }
 
 /**
@@ -293,7 +301,7 @@ function testDoPost() {
 function resetHeaders() {
   const sheet = getOrCreateSheet();
   setupHeaders(sheet);
-  Logger.log('Headers reset on sheet: ' + SHEET_NAME);
+  Logger.log("Headers reset on sheet: " + SHEET_NAME);
 }
 
 /**
@@ -302,10 +310,13 @@ function resetHeaders() {
 function reformatAllRows() {
   const sheet = getOrCreateSheet();
   const lastRow = sheet.getLastRow();
-  if (lastRow < 2) { Logger.log('No data rows to format'); return; }
+  if (lastRow < 2) {
+    Logger.log("No data rows to format");
+    return;
+  }
 
   for (let row = 2; row <= lastRow; row++) {
-    const status = sheet.getRange(row, 9).getValue() || 'pending';
+    const status = sheet.getRange(row, 9).getValue() || "pending";
     styleNewRow(sheet, row, status);
   }
   Logger.log(`Reformatted ${lastRow - 1} rows`);
