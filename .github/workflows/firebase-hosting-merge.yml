@@ -51,16 +51,23 @@ jobs:
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> functions/.env
           echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> functions/.env
           echo "SES_FROM_EMAIL=${{ secrets.SES_FROM_EMAIL }}" >> functions/.env
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> functions/.env
+          echo "GOOGLE_BUSINESS_ACCOUNT_ID=${{ secrets.GOOGLE_BUSINESS_ACCOUNT_ID }}" >> functions/.env
+          echo "GOOGLE_BUSINESS_LOCATION_ID=${{ secrets.GOOGLE_BUSINESS_LOCATION_ID }}" >> functions/.env
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> functions/.env
+          echo "GOOGLE_BUSINESS_ACCOUNT_ID=${{ secrets.GOOGLE_BUSINESS_ACCOUNT_ID }}" >> functions/.env
+          echo "GOOGLE_BUSINESS_LOCATION_ID=${{ secrets.GOOGLE_BUSINESS_LOCATION_ID }}" >> functions/.env
 
       # ── Functions: install & deploy ─────────────────────────────────────────
       - name: Install functions dependencies
-        run: cd functions && npm ci
+        run: cd functions && npm install --legacy-peer-deps
 
       - name: Deploy Firebase Functions
-        run: npx firebase-tools deploy --only functions --project vikram-products
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_VIKRAM_PRODUCTS }}' > /tmp/sa.json
+          npx firebase-tools deploy --only functions --project vikram-products
         env:
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VIKRAM_PRODUCTS }}
-          FIREBASE_CLI_EXPERIMENTS: webframeworks
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
 
       # ── Hosting deploy ───────────────────────────────────────────────────────
       - uses: FirebaseExtended/action-hosting-deploy@v0
