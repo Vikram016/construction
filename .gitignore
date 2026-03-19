@@ -45,3 +45,8 @@ pnpm-debug.log*
 # Firebase
 .firebase/
 firebase-debug.log
+
+
+# Google Apps Script files (run on Google servers, not here)
+GoogleAppsScript_Orders.js
+GoogleAppsScript_SiteClean.js
