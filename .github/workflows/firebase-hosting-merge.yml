@@ -9,13 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
+
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
+
       - name: Build
         env:
           VITE_WHATSAPP_NUMBER: ${{ secrets.VITE_WHATSAPP_NUMBER }}
@@ -33,6 +36,33 @@ jobs:
           WHATSAPP_ACCESS_TOKEN: ${{ secrets.WHATSAPP_ACCESS_TOKEN }}
           WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
         run: npm run build
+
+      # ── Functions: create .env from GitHub Secrets ──────────────────────────
+      - name: Create functions .env
+        run: |
+          echo "SITE_CLEAN_WEBHOOK=${{ secrets.SITE_CLEAN_WEBHOOK }}" >> functions/.env
+          echo "WASTE_SAND_WEBHOOK=${{ secrets.WASTE_SAND_WEBHOOK }}" >> functions/.env
+          echo "DEBRIS_SAND_WEBHOOK=${{ secrets.DEBRIS_SAND_WEBHOOK }}" >> functions/.env
+          echo "ORDERS_WEBHOOK=${{ secrets.ORDERS_WEBHOOK }}" >> functions/.env
+          echo "WHATSAPP_ACCESS_TOKEN=${{ secrets.WHATSAPP_ACCESS_TOKEN }}" >> functions/.env
+          echo "WHATSAPP_PHONE_NUMBER_ID=${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}" >> functions/.env
+          echo "WHATSAPP_PROVIDER=${{ secrets.WHATSAPP_PROVIDER }}" >> functions/.env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> functions/.env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> functions/.env
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> functions/.env
+          echo "SES_FROM_EMAIL=${{ secrets.SES_FROM_EMAIL }}" >> functions/.env
+
+      # ── Functions: install & deploy ─────────────────────────────────────────
+      - name: Install functions dependencies
+        run: cd functions && npm ci
+
+      - name: Deploy Firebase Functions
+        run: npx firebase-tools deploy --only functions --project vikram-products
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VIKRAM_PRODUCTS }}
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
+
+      # ── Hosting deploy ───────────────────────────────────────────────────────
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
