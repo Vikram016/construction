@@ -245,7 +245,7 @@ exports.resendInvoiceManually = functions.https.onCall(async (data, context) => 
    CLEANUP — delete invoices older than 1 year (saves Storage costs)
    ════════════════════════════════════════════════════════════════════════════ */
 exports.cleanupOldInvoices = functions.pubsub
-  .schedule('every 30 days')
+  .schedule('0 0 1 * *').timeZone('Asia/Kolkata')
   .onRun(async () => {
     const oneYearAgo = admin.firestore.Timestamp.fromDate(
       new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
