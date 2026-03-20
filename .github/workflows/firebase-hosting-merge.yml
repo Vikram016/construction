@@ -63,11 +63,11 @@ jobs:
         run: cd functions && npm install --legacy-peer-deps
 
       - name: Deploy Firebase Functions
-        run: |
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_VIKRAM_PRODUCTS }}' > /tmp/sa.json
-          npx firebase-tools deploy --only functions --project vikram-products
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions --project vikram-products
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VIKRAM_PRODUCTS }}
 
       # ── Hosting deploy ───────────────────────────────────────────────────────
       - uses: FirebaseExtended/action-hosting-deploy@v0
@@ -76,3 +76,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VIKRAM_PRODUCTS }}
           channelId: live
           projectId: vikram-products
+
