@@ -118,15 +118,15 @@ const sendWeeklyReportEmail = async (pdfBuffer, weekNumber, year) => {
   console.log('Sending weekly report email...');
   
   const sesClient = new SESClient({
-    region: functions.config().aws?.region || 'us-east-1',
+    region: require('./utils/config')().aws?.region || 'us-east-1',
     credentials: {
-      accessKeyId: functions.config().aws?.access_key_id,
-      secretAccessKey: functions.config().aws?.secret_access_key
+      accessKeyId: require('./utils/config')().aws?.access_key_id,
+      secretAccessKey: require('./utils/config')().aws?.secret_access_key
     }
   });
   
-  const fromEmail = functions.config().aws?.from_email || 'reports@buildmart.com';
-  const adminEmail = functions.config().admin?.email || 'admin@buildmart.com';
+  const fromEmail = require('./utils/config')().aws?.from_email || 'reports@buildmart.com';
+  const adminEmail = require('./utils/config')().admin?.email || 'admin@buildmart.com';
   
   const subject = `Weekly Revenue Report – Week ${weekNumber}`;
   

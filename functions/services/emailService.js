@@ -9,9 +9,9 @@ const admin = require('firebase-admin');
 
 // Initialize SES Client
 const initSESClient = () => {
-  const accessKeyId = functions.config().aws?.access_key_id;
-  const secretAccessKey = functions.config().aws?.secret_access_key;
-  const region = functions.config().aws?.region || 'us-east-1';
+  const accessKeyId = require('../config')().aws?.access_key_id;
+  const secretAccessKey = require('../config')().aws?.secret_access_key;
+  const region = require('../config')().aws?.region || 'us-east-1';
 
   if (!accessKeyId || !secretAccessKey) {
     throw new Error('AWS SES configuration missing');
@@ -213,7 +213,7 @@ const downloadInvoicePDF = async (invoiceUrl) => {
  * Create MIME email with PDF attachment
  */
 const createMIMEMessage = (to, subject, htmlBody, pdfBuffer, invoiceNumber) => {
-  const fromEmail = functions.config().aws?.from_email || 'noreply@buildmart.com';
+  const fromEmail = require('../config')().aws?.from_email || 'noreply@buildmart.com';
   const boundary = `----=_Part_${Date.now()}`;
   
   // Base64 encode PDF
@@ -273,7 +273,7 @@ const sendInvoiceEmail = async (orderData) => {
     }
 
     const sesClient = initSESClient();
-    const fromEmail = functions.config().aws?.from_email || 'noreply@buildmart.com';
+    const fromEmail = require('../config')().aws?.from_email || 'noreply@buildmart.com';
 
     // Download invoice PDF
     const pdfBuffer = await downloadInvoicePDF(orderData.invoice.invoiceUrl);

@@ -8,9 +8,9 @@ const functions = require('firebase-functions');
 
 // Initialize Google Sheets API
 const initSheetsAPI = () => {
-  const serviceAccountEmail = functions.config().google?.service_account_email;
-  const privateKey = functions.config().google?.private_key?.replace(/\\n/g, '\n');
-  const spreadsheetId = functions.config().google?.sheet_id;
+  const serviceAccountEmail = require('../config')().google?.service_account_email;
+  const privateKey = require('../config')().google?.private_key?.replace(/\\n/g, '\n');
+  const spreadsheetId = require('../config')().google?.sheet_id;
 
   if (!serviceAccountEmail || !privateKey || !spreadsheetId) {
     throw new Error('Google Sheets configuration missing');

@@ -156,8 +156,8 @@ exports.sendInquiryAcknowledgmentWhatsApp = functions.firestore
     const inquiryData = { ...snap.data(), id: context.params.inquiryId };
     const customerPhone = inquiryData.customer?.phone || inquiryData.phone;
     const ownerPhone =
-      functions.config().business?.owner_phone ||
-      functions.config().whatsapp?.owner_phone;
+      require('./utils/config')().business?.owner_phone ||
+      require('./utils/config')().whatsapp?.owner_phone;
 
     console.log(`New inquiry: ${inquiryData.inquiryNumber || inquiryData.id}`);
 

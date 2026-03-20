@@ -12,27 +12,27 @@ const functions = require('firebase-functions');
 
 // Get WhatsApp configuration from Firebase environment
 const getWhatsAppConfig = () => {
-  const provider = functions.config().whatsapp?.provider || 'twilio';
+  const provider = require('./utils/config')().whatsapp?.provider || 'twilio';
   
   if (provider === 'twilio') {
     return {
       provider: 'twilio',
-      accountSid: functions.config().whatsapp?.twilio_account_sid,
-      authToken: functions.config().whatsapp?.twilio_auth_token,
-      fromNumber: functions.config().whatsapp?.twilio_from_number, // format: whatsapp:+14155238886
+      accountSid: require('./utils/config')().whatsapp?.twilio_account_sid,
+      authToken: require('./utils/config')().whatsapp?.twilio_auth_token,
+      fromNumber: require('./utils/config')().whatsapp?.twilio_from_number, // format: whatsapp:+14155238886
       baseUrl: 'https://api.twilio.com/2010-04-01'
     };
   } else if (provider === 'wati') {
     return {
       provider: 'wati',
-      apiKey: functions.config().whatsapp?.wati_api_key,
-      apiUrl: functions.config().whatsapp?.wati_api_url, // e.g., https://live-server-XXXX.wati.io
+      apiKey: require('./utils/config')().whatsapp?.wati_api_key,
+      apiUrl: require('./utils/config')().whatsapp?.wati_api_url, // e.g., https://live-server-XXXX.wati.io
     };
   } else if (provider === 'whatsapp_business') {
     return {
       provider: 'whatsapp_business',
-      accessToken: functions.config().whatsapp?.access_token,
-      phoneNumberId: functions.config().whatsapp?.phone_number_id,
+      accessToken: require('./utils/config')().whatsapp?.access_token,
+      phoneNumberId: require('./utils/config')().whatsapp?.phone_number_id,
       baseUrl: 'https://graph.facebook.com/v18.0'
     };
   }

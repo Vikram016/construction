@@ -46,7 +46,7 @@ const formatDate = (timestamp) => {
  * @returns {Promise<Object>} - Success/failure response
  */
 const sendPurchaseToSheet = async (orderData) => {
-  const webhookUrl = functions.config().sheets?.purchase_webhook;
+  const webhookUrl = require('./utils/config')().sheets?.purchase_webhook;
   
   if (!webhookUrl) {
     console.error('Purchase Sheet webhook URL not configured');
@@ -128,7 +128,7 @@ const sendPurchaseToSheet = async (orderData) => {
  * @returns {Promise<Object>} - Success/failure response
  */
 const sendInquiryToSheet = async (inquiryData) => {
-  const webhookUrl = functions.config().sheets?.inquiry_webhook;
+  const webhookUrl = require('./utils/config')().sheets?.inquiry_webhook;
   
   if (!webhookUrl) {
     console.error('Inquiry Sheet webhook URL not configured');
@@ -275,7 +275,7 @@ const resendToSheet = async (type, data) => {
  * @returns {Promise<Object>} - { success, bookingId, timestamp, error? }
  */
 const sendWasteSandToSheet = async (bookingData) => {
-  const webhookUrl = functions.config().sheets?.waste_sand_webhook;
+  const webhookUrl = require('./utils/config')().sheets?.waste_sand_webhook;
 
   if (!webhookUrl) {
     console.error('[WasteSand] waste_sand_webhook not configured in Firebase Functions config');
@@ -352,7 +352,7 @@ const sendWasteSandToSheet = async (bookingData) => {
  *   firebase functions:config:set sheets.debris_sand_webhook="<Apps Script URL>"
  */
 const sendDebrisSandToSheet = async (bookingData) => {
-  const webhookUrl = functions.config().sheets?.debris_sand_webhook;
+  const webhookUrl = require('./utils/config')().sheets?.debris_sand_webhook;
 
   if (!webhookUrl) {
     console.error('[DebrisSand] debris_sand_webhook not configured in Firebase Functions config');
@@ -420,7 +420,7 @@ const sendDebrisSandToSheet = async (bookingData) => {
  *   firebase functions:config:set sheets.site_clean_webhook="<Apps Script URL>"
  */
 const sendSiteCleanToSheet = async (bookingData) => {
-  const webhookUrl = functions.config().sheets?.site_clean_webhook;
+  const webhookUrl = require('./utils/config')().sheets?.site_clean_webhook;
 
   if (!webhookUrl) {
     console.error('[SiteClean] site_clean_webhook not configured in Firebase Functions config');

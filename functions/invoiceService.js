@@ -415,7 +415,7 @@ const sendInvoiceToCustomer = async ({
   }
 
   try {
-    const cfg = functions.config().aws || {};
+    const cfg = require('./utils/config')().aws || {};
     if (!cfg.access_key_id || !cfg.secret_access_key) {
       console.warn("[invoice] AWS SES not configured — skipping email");
       results.emailSkipped = true;

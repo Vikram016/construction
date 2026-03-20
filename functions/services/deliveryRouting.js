@@ -119,14 +119,14 @@ const createThirdPartyShipment = async (order) => {
   
   try {
     // Get third-party API configuration
-    const apiUrl = functions.config().delivery?.third_party_api_url || process.env.THIRD_PARTY_API_URL;
-    const apiKey = functions.config().delivery?.third_party_api_key || process.env.THIRD_PARTY_API_KEY;
+    const apiUrl = require('../config')().delivery?.third_party_api_url || process.env.THIRD_PARTY_API_URL;
+    const apiKey = require('../config')().delivery?.third_party_api_key || process.env.THIRD_PARTY_API_KEY;
     
     if (!apiUrl || !apiKey) {
       console.warn('Third-party delivery API not configured, will use fallback');
       
       // Check if fallback to OWN is configured
-      const allowFallback = functions.config().delivery?.allow_fallback === 'true';
+      const allowFallback = require('../config')().delivery?.allow_fallback === 'true';
       
       if (allowFallback) {
         console.log('Falling back to OWN delivery');
@@ -205,7 +205,7 @@ const createThirdPartyShipment = async (order) => {
     console.error('Error creating THIRD_PARTY delivery:', error.message);
     
     // Check if fallback is allowed
-    const allowFallback = functions.config().delivery?.allow_fallback === 'true';
+    const allowFallback = require('../config')().delivery?.allow_fallback === 'true';
     
     if (allowFallback) {
       console.log('Third-party API failed, falling back to OWN delivery');

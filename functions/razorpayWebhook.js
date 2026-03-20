@@ -133,7 +133,7 @@ exports.razorpayWebhook = functions.https.onRequest(async (req, res) => {
     return res.status(405).send('Method Not Allowed');
   }
 
-  const webhookSecret = functions.config().razorpay?.webhook_secret;
+  const webhookSecret = require('./utils/config')().razorpay?.webhook_secret;
 
   // ── 1. Verify signature ──────────────────────────────────────────────────
   if (webhookSecret) {
@@ -253,7 +253,7 @@ async function handlePaymentCaptured(payload) {
   }
 
   // ── Send WhatsApp alert to admin ─────────────────────────────────────────
-  const adminPhone = functions.config().admin?.whatsapp_phone;
+  const adminPhone = require('./utils/config')().admin?.whatsapp_phone;
   if (adminPhone) {
     const adminMsg = getNewPaidOrderAdminMessage(orderData, payment);
     await sendWhatsAppMessage(adminPhone, adminMsg);

@@ -27,7 +27,7 @@ const fmtDate = (ts) => {
  * @param {string} paymentId  Razorpay payment ID (or 'WhatsApp' for WA orders)
  */
 const sendOrderToSheets = async (orderData, paymentId = 'N/A') => {
-  const webhookUrl = functions.config().sheets?.orders_webhook;
+  const webhookUrl = require('./utils/config')().sheets?.orders_webhook;
 
   if (!webhookUrl) {
     console.warn('[sheets/orders] orders_webhook not configured — skipping');
