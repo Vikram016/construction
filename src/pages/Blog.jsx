@@ -2,33 +2,25 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { blogsData } from "../data/blogs";
 import BlogCard from "../components/BlogCard";
-import { db } from "../firebase/firebaseConfig";
-import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
 import PageSEO from "../components/PageSEO";
 import { PAGE_SEO, LOCAL_BUSINESS_SCHEMA, SITE } from "../config/seoConfig";
+import { fetchAllPosts } from "../services/hashnodeService";
 
 const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [allBlogs, setAllBlogs] = useState(blogsData); // start with static
+  const [allBlogs, setAllBlogs] = useState(blogsData); // start with static data
 
-  // Load from Firestore, fall back to static data
   useEffect(() => {
-    const fetchBlogs = async () => {
+    const load = async () => {
       try {
-        const q = query(
-          collection(db, "blogs"),
-          where("isActive", "!=", false),
-          orderBy("publishedAt", "desc"),
-        );
-        const snap = await getDocs(q);
-        const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        if (docs.length > 0) setAllBlogs(docs);
+        const posts = await fetchAllPosts();
+        if (posts.length > 0) setAllBlogs(posts);
       } catch (e) {
-        console.info("[Blog] Firestore unavailable — using static data");
+        console.info("[Blog] Hashnode unavailable — using static data");
       }
     };
-    fetchBlogs();
+    load();
   }, []);
 
   const categories = [

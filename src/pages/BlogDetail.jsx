@@ -2,8 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { blogsData } from "../data/blogs";
 import BlogCard from "../components/BlogCard";
-import { db } from "../firebase/firebaseConfig";
-import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
+import { fetchPostBySlug } from "../services/hashnodeService";
 
 const BlogDetail = () => {
   const { slug } = useParams();
@@ -14,27 +13,20 @@ const BlogDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchBlogs = async () => {
+    const load = async () => {
       try {
-        const q = query(
-          collection(db, "blogs"),
-          where("isActive", "!=", false),
-          orderBy("publishedAt", "desc"),
-        );
-        const snap = await getDocs(q);
-        const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        if (docs.length > 0) {
-          setAllBlogs(docs);
-          const found = docs.find((b) => b.slug === slug);
-          if (found) setBlog(found);
+        const post = await fetchPostBySlug(slug);
+        if (post) {
+          setBlog(post);
+          setAllBlogs([]);
         }
       } catch (e) {
-        console.info("[BlogDetail] Firestore unavailable — using static data");
+        console.info("[BlogDetail] Hashnode unavailable — using static data");
       } finally {
         setLoading(false);
       }
     };
-    fetchBlogs();
+    load();
   }, [slug]);
 
   if (loading) {
@@ -172,7 +164,7 @@ const BlogDetail = () => {
               </div>
             </div>
 
-            {/* Share Buttons */}
+            {/* Share Button */}
             <div className="mt-8 flex gap-3">
               <button
                 onClick={shareOnWhatsApp}
