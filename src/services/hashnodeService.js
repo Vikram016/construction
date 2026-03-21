@@ -86,7 +86,7 @@ export async function fetchAllPosts() {
       query: `
         query GetAllPosts {
           publication(host: "${PUBLICATION_HOST}") {
-            posts(first: 50) {
+            posts(first: 20) {
               edges {
                 node {
                   id
@@ -96,10 +96,8 @@ export async function fetchAllPosts() {
                   coverImage { url }
                   publishedAt
                   readTimeInMinutes
-                  views
-                  featured
                   tags { name slug }
-                  author { name bio profilePicture }
+                  author { name bio }
                 }
               }
             }
@@ -109,12 +107,17 @@ export async function fetchAllPosts() {
     }),
   });
 
-  if (!res.ok) throw new Error(`Hashnode API error: ${res.status}`);
+  const json = await res.json();
 
-  const { data, errors } = await res.json();
-  if (errors) throw new Error(errors[0].message);
+  // Log full response so we can see what Hashnode returns
+  console.log(
+    "[Hashnode] fetchAllPosts response:",
+    JSON.stringify(json, null, 2),
+  );
 
-  return data.publication.posts.edges.map(({ node }) => ({
+  if (json.errors) throw new Error(json.errors[0].message);
+
+  return json.data.publication.posts.edges.map(({ node }) => ({
     id: node.id,
     title: node.title,
     slug: node.slug,
@@ -124,8 +127,8 @@ export async function fetchAllPosts() {
       "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800",
     publishedAt: node.publishedAt,
     readTime: `${node.readTimeInMinutes} min read`,
-    views: node.views || 0,
-    featured: node.featured || false,
+    views: 0,
+    featured: false,
     isActive: true,
     category: mapTagsToCategory(node.tags),
     author: {
