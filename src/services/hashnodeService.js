@@ -97,7 +97,7 @@ export async function fetchAllPosts() {
                   publishedAt
                   readTimeInMinutes
                   tags { name slug }
-                  author { name bio }
+                  author { name  }
                 }
               }
             }
@@ -158,7 +158,7 @@ export async function fetchPostBySlug(slug) {
               readTimeInMinutes
               views
               tags { name slug }
-              author { name bio profilePicture }
+              author { name  }
             }
           }
         }
