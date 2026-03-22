@@ -1,41 +1,10 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { blogsData } from "../data/blogs";
 import BlogCard from "../components/BlogCard";
-import { fetchPostBySlug } from "../services/hashnodeService";
 
 const BlogDetail = () => {
   const { slug } = useParams();
-  const [blog, setBlog] = useState(
-    blogsData.find((b) => b.slug === slug) || null,
-  );
-  const [allBlogs, setAllBlogs] = useState(blogsData);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const post = await fetchPostBySlug(slug);
-        if (post) {
-          setBlog(post);
-          setAllBlogs([]);
-        }
-      } catch (e) {
-        console.info("[BlogDetail] Hashnode unavailable — using static data");
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  const blog = blogsData.find((b) => b.slug === slug);
 
   if (!blog) {
     return (
@@ -58,7 +27,7 @@ const BlogDetail = () => {
     });
   };
 
-  const relatedBlogs = allBlogs
+  const relatedBlogs = blogsData
     .filter((b) => b.category === blog.category && b.id !== blog.id)
     .slice(0, 3);
 
@@ -164,7 +133,7 @@ const BlogDetail = () => {
               </div>
             </div>
 
-            {/* Share Button */}
+            {/* Share Buttons */}
             <div className="mt-8 flex gap-3">
               <button
                 onClick={shareOnWhatsApp}
